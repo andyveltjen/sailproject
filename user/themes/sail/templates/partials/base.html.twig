@@ -1,0 +1,109 @@
+{% set theme_config = attribute(config.themes, config.system.pages.theme) %}
+<!DOCTYPE html>
+<html lang="{{ grav.language.getActive ?: grav.config.site.default_lang }}">
+<head>
+    <meta charset="utf-8" />
+    <title>{% if header.title %}{{ header.title }} | {% endif %}{{ site.title }}</title>
+    {% include 'partials/metadata.html.twig' %}
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="{{ url('theme://images/favicon.png') }}">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        sail: {
+                            50:  '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            500: '#4f46e5',
+                            600: '#4338ca',
+                            700: '#3730a3',
+                            900: '#1e1b4b',
+                        }
+                    },
+                    typography: {
+                        DEFAULT: {
+                            css: {
+                                maxWidth: 'none',
+                            }
+                        }
+                    }
+                }
+            },
+            plugins: [],
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url('theme://css/font-awesome.min.css') }}">
+
+    <style>
+        /* Prose styles for wiki content */
+        .prose h1 { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem; margin-top: 2rem; }
+        .prose h2 { font-size: 1.5rem; font-weight: 600; color: #1e293b; margin-bottom: 0.75rem; margin-top: 2rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e2e8f0; }
+        .prose h3 { font-size: 1.2rem; font-weight: 600; color: #334155; margin-bottom: 0.5rem; margin-top: 1.5rem; }
+        .prose p { color: #475569; line-height: 1.8; margin-bottom: 1rem; }
+        .prose ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; color: #475569; }
+        .prose ol { list-style: decimal; padding-left: 1.5rem; margin-bottom: 1rem; color: #475569; }
+        .prose li { margin-bottom: 0.25rem; line-height: 1.7; }
+        .prose a { color: #4f46e5; text-decoration: underline; }
+        .prose a:hover { color: #3730a3; }
+        .prose blockquote { border-left: 4px solid #4f46e5; padding-left: 1rem; margin: 1.5rem 0; color: #64748b; font-style: italic; background: #eef2ff; padding: 1rem 1rem 1rem 1.25rem; border-radius: 0 0.375rem 0.375rem 0; }
+        .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 0.9rem; }
+        .prose table th { background: #f1f5f9; padding: 0.6rem 1rem; text-align: left; font-weight: 600; color: #334155; border: 1px solid #e2e8f0; }
+        .prose table td { padding: 0.6rem 1rem; border: 1px solid #e2e8f0; color: #475569; }
+        .prose table tr:nth-child(even) { background: #f8fafc; }
+        .prose code { background: #f1f5f9; padding: 0.15rem 0.4rem; border-radius: 0.25rem; font-size: 0.875rem; color: #4f46e5; }
+        .prose pre { background: #1e293b; color: #e2e8f0; padding: 1.25rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .prose pre code { background: transparent; color: inherit; padding: 0; }
+        .prose hr { border-color: #e2e8f0; margin: 2rem 0; }
+
+        /* Notices */
+        .notices { padding: 1rem 1.25rem; border-radius: 0.5rem; margin: 1.25rem 0; font-size: 0.95rem; }
+        .notices.info { background: #eef2ff; border-left: 4px solid #4f46e5; color: #3730a3; }
+        .notices.warning { background: #fffbeb; border-left: 4px solid #f59e0b; color: #92400e; }
+        .notices.tip { background: #f0fdf4; border-left: 4px solid #22c55e; color: #166534; }
+
+        /* Sidebar nav */
+        .sidebar-link { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: #94a3b8; transition: all 0.15s; }
+        .sidebar-link:hover { background: #1e293b; color: #e2e8f0; }
+        .sidebar-link.active { background: #4f46e5; color: white; font-weight: 500; }
+        .sidebar-link.parent > span { color: #e2e8f0; font-weight: 500; }
+
+        /* Mobile sidebar */
+        @media (max-width: 768px) {
+            #wiki-sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+            #wiki-sidebar.open { transform: translateX(0); }
+        }
+    </style>
+
+    {% block javascripts %}
+        {% do assets.addJs('jquery', 101) %}
+    {% endblock %}
+
+    {% block assets deferred %}
+    {{ assets.js()|raw }}
+    {% endblock %}
+</head>
+<body class="font-sans antialiased bg-white text-slate-800">
+
+    {% block body %}{% endblock %}
+
+    {% block analytics %}
+        {% if theme_config.google_analytics_code %}
+        {% include 'partials/analytics.html.twig' %}
+        {% endif %}
+    {% endblock %}
+
+    {% block bottom %}
+        {{ assets.js('bottom')|raw }}
+    {% endblock %}
+
+</body>
+</html>
