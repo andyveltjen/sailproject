@@ -1,5 +1,7 @@
 {% extends 'partials/base.html.twig' %}
 
+{% set h = page.header %}
+
 {% block body %}
 
 {# ── Top navigation ── #}
@@ -31,20 +33,26 @@
                 <span class="w-1.5 h-1.5 rounded-full bg-sail-500"></span>
                 Onderzoeksproject 2024–2025
             </span>
-            <h1 class="text-5xl font-bold text-slate-900 leading-tight mb-6">
-                Hoe gaan opleidingen om met<br>
-                <span class="text-sail-600">AI in het onderwijs?</span>
+            <h1 class="text-5xl font-bold text-slate-900 leading-tight mb-4">
+                {{ page.title }}
             </h1>
-            <p class="text-xl text-slate-500 leading-relaxed mb-10 max-w-2xl">
-                SAIL brengt internationaal literatuuronderzoek en praktijkervaring samen tot een praktische richtlijnengids voor docenten en opleidingen in het Vlaamse hoger onderwijs.
-            </p>
+            {% if h.hero.subtitle %}
+            <p class="text-2xl text-sail-600 font-medium mb-6">{{ h.hero.subtitle }}</p>
+            {% endif %}
+            {% if h.hero.intro %}
+            <p class="text-xl text-slate-500 leading-relaxed mb-10 max-w-2xl">{{ h.hero.intro }}</p>
+            {% endif %}
             <div class="flex flex-wrap gap-4">
-                <a href="{{ base_url_absolute }}/wiki" class="inline-flex items-center gap-2 bg-sail-500 hover:bg-sail-600 text-white font-medium px-6 py-3 rounded-xl transition-colors shadow-lg shadow-sail-200">
-                    Bekijk de Wiki of Research <i class="fa fa-arrow-right"></i>
+                {% if h.hero.cta_text %}
+                <a href="{{ h.hero.cta_url ?: base_url_absolute ~ '/wiki' }}" class="inline-flex items-center gap-2 bg-sail-500 hover:bg-sail-600 text-white font-medium px-6 py-3 rounded-xl transition-colors shadow-lg shadow-sail-200">
+                    {{ h.hero.cta_text }} <i class="fa fa-arrow-right"></i>
                 </a>
+                {% endif %}
+                {% if h.hero.second_cta_text %}
                 <a href="#project" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium px-6 py-3 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors">
-                    Meer over het project
+                    {{ h.hero.second_cta_text }}
                 </a>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -56,56 +64,41 @@
         <div class="grid md:grid-cols-2 gap-16 items-center">
             <div>
                 <h2 class="text-3xl font-bold text-slate-900 mb-4">Over het project</h2>
-                <p class="text-slate-500 leading-relaxed mb-4">
-                    Het gebruik van AI-tools in het onderwijs groeit razendsnel. Studenten gebruiken generatieve AI voor opdrachten, docenten experimenteren met AI-gestuurde feedback, en instellingen worstelen met beleid rond academische integriteit.
-                </p>
-                <p class="text-slate-500 leading-relaxed mb-6">
-                    Het SAIL-project beantwoordt de vraag: <strong class="text-slate-700">hoe navigeer je als opleiding verantwoord door dit landschap?</strong>
-                </p>
+                {% if h.project.description1 %}
+                <p class="text-slate-500 leading-relaxed mb-4">{{ h.project.description1 }}</p>
+                {% endif %}
+                {% if h.project.description2 %}
+                <p class="text-slate-500 leading-relaxed mb-6">{{ h.project.description2 }}</p>
+                {% endif %}
+                {% if h.project.checks %}
                 <div class="flex flex-col gap-3">
+                    {% for check in h.project.checks %}
                     <div class="flex items-start gap-3">
                         <span class="w-6 h-6 rounded-full bg-sail-100 flex items-center justify-center mt-0.5 flex-shrink-0">
                             <i class="fa fa-check text-sail-600 text-xs"></i>
                         </span>
-                        <span class="text-slate-600 text-sm">Systematisch literatuuronderzoek (87 publicaties)</span>
+                        <span class="text-slate-600 text-sm">{{ check.text }}</span>
                     </div>
-                    <div class="flex items-start gap-3">
-                        <span class="w-6 h-6 rounded-full bg-sail-100 flex items-center justify-center mt-0.5 flex-shrink-0">
-                            <i class="fa fa-check text-sail-600 text-xs"></i>
-                        </span>
-                        <span class="text-slate-600 text-sm">Praktijkonderzoek met Vlaamse docenten</span>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <span class="w-6 h-6 rounded-full bg-sail-100 flex items-center justify-center mt-0.5 flex-shrink-0">
-                            <i class="fa fa-check text-sail-600 text-xs"></i>
-                        </span>
-                        <span class="text-slate-600 text-sm">Co-creatie van concrete richtlijnen</span>
-                    </div>
+                    {% endfor %}
                 </div>
+                {% endif %}
             </div>
+            {% if h.project.stats %}
             <div class="grid grid-cols-2 gap-4">
-                <div class="bg-slate-50 rounded-2xl p-6">
-                    <div class="text-3xl font-bold text-sail-600 mb-1">87</div>
-                    <div class="text-sm text-slate-500">Geanalyseerde publicaties</div>
+                {% for stat in h.project.stats %}
+                <div class="{% if loop.index is odd %}bg-slate-50{% else %}bg-sail-50{% endif %} rounded-2xl p-6">
+                    <div class="text-3xl font-bold text-sail-600 mb-1">{{ stat.number }}</div>
+                    <div class="text-sm text-slate-500">{{ stat.label }}</div>
                 </div>
-                <div class="bg-sail-50 rounded-2xl p-6">
-                    <div class="text-3xl font-bold text-sail-600 mb-1">4</div>
-                    <div class="text-sm text-slate-500">Onderzoeksfasen</div>
-                </div>
-                <div class="bg-sail-50 rounded-2xl p-6">
-                    <div class="text-3xl font-bold text-sail-600 mb-1">2025</div>
-                    <div class="text-sm text-slate-500">Publicatie eindgids</div>
-                </div>
-                <div class="bg-slate-50 rounded-2xl p-6">
-                    <div class="text-3xl font-bold text-sail-600 mb-1">BE</div>
-                    <div class="text-sm text-slate-500">Focus Vlaamse context</div>
-                </div>
+                {% endfor %}
             </div>
+            {% endif %}
         </div>
     </div>
 </section>
 
 {# ── Wiki kaarten ── #}
+{% if h.wiki_sections %}
 <section class="py-20 px-6 bg-slate-50">
     <div class="max-w-6xl mx-auto">
         <div class="mb-12">
@@ -113,52 +106,29 @@
             <p class="text-slate-500 max-w-xl">Al ons onderzoek, gestructureerd en doorzoekbaar. Groeit mee naarmate het project vordert.</p>
         </div>
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-            <a href="{{ base_url_absolute }}/wiki/inleiding" class="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-sail-300 hover:shadow-lg transition-all">
+            {% for section in h.wiki_sections %}
+            <a href="{{ base_url_absolute }}{{ section.url }}" class="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-sail-300 hover:shadow-lg transition-all">
                 <div class="w-10 h-10 rounded-xl bg-sail-100 flex items-center justify-center mb-4 group-hover:bg-sail-500 transition-colors">
-                    <i class="fa fa-flag-o text-sail-600 group-hover:text-white transition-colors"></i>
+                    <i class="fa {{ section.icon }} text-sail-600 group-hover:text-white transition-colors"></i>
                 </div>
-                <h3 class="font-semibold text-slate-900 mb-2">Inleiding</h3>
-                <p class="text-sm text-slate-500">Onderzoeksvragen en methodologie</p>
+                <h3 class="font-semibold text-slate-900 mb-2">{{ section.title }}</h3>
+                <p class="text-sm text-slate-500">{{ section.description }}</p>
             </a>
-            <a href="{{ base_url_absolute }}/wiki/literatuuronderzoek" class="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-sail-300 hover:shadow-lg transition-all">
-                <div class="w-10 h-10 rounded-xl bg-sail-100 flex items-center justify-center mb-4 group-hover:bg-sail-500 transition-colors">
-                    <i class="fa fa-book text-sail-600 group-hover:text-white transition-colors"></i>
-                </div>
-                <h3 class="font-semibold text-slate-900 mb-2">Literatuuronderzoek</h3>
-                <p class="text-sm text-slate-500">Analyse van internationale literatuur</p>
-            </a>
-            <a href="{{ base_url_absolute }}/wiki/bevindingen" class="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-sail-300 hover:shadow-lg transition-all">
-                <div class="w-10 h-10 rounded-xl bg-sail-100 flex items-center justify-center mb-4 group-hover:bg-sail-500 transition-colors">
-                    <i class="fa fa-lightbulb-o text-sail-600 group-hover:text-white transition-colors"></i>
-                </div>
-                <h3 class="font-semibold text-slate-900 mb-2">Bevindingen</h3>
-                <p class="text-sm text-slate-500">Synthese en tussentijdse conclusies</p>
-            </a>
-            <a href="{{ base_url_absolute }}/wiki/richtlijnen" class="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-sail-300 hover:shadow-lg transition-all">
-                <div class="w-10 h-10 rounded-xl bg-sail-100 flex items-center justify-center mb-4 group-hover:bg-sail-500 transition-colors">
-                    <i class="fa fa-compass text-sail-600 group-hover:text-white transition-colors"></i>
-                </div>
-                <h3 class="font-semibold text-slate-900 mb-2">Richtlijnen</h3>
-                <p class="text-sm text-slate-500">Ontwikkeling van de finale gids</p>
-            </a>
+            {% endfor %}
         </div>
     </div>
 </section>
+{% endif %}
 
 {# ── Tijdlijn ── #}
+{% if h.timeline %}
 <section class="py-20 px-6">
     <div class="max-w-6xl mx-auto">
         <h2 class="text-3xl font-bold text-slate-900 mb-12">Tijdlijn</h2>
         <div class="relative">
             <div class="absolute left-4 top-0 bottom-0 w-px bg-slate-200 md:left-1/2"></div>
             <div class="space-y-8">
-                {% set phases = [
-                    { name: 'Literatuuronderzoek', period: 'Sept 2024 – Jan 2025', status: 'Lopend', done: true },
-                    { name: 'Praktijkonderzoek', period: 'Febr – April 2025', status: 'Gepland', done: false },
-                    { name: 'Co-creatie richtlijnen', period: 'Mei – Juni 2025', status: 'Gepland', done: false },
-                    { name: 'Publicatie eindgids', period: 'Sept 2025', status: 'Gepland', done: false },
-                ] %}
-                {% for phase in phases %}
+                {% for phase in h.timeline %}
                 <div class="flex items-center gap-6 pl-12 md:pl-0 {% if loop.index is even %}md:flex-row-reverse{% endif %}">
                     <div class="hidden md:block w-1/2 {% if loop.index is even %}text-left pl-8{% else %}text-right pr-8{% endif %}">
                         <div class="font-semibold text-slate-900">{{ phase.name }}</div>
@@ -166,9 +136,7 @@
                     </div>
                     <div class="absolute left-4 md:left-1/2 md:-translate-x-1/2 w-8 h-8 rounded-full border-2 flex items-center justify-center
                         {% if phase.done %}bg-sail-500 border-sail-500{% else %}bg-white border-slate-300{% endif %}">
-                        {% if phase.done %}
-                            <i class="fa fa-check text-white text-xs"></i>
-                        {% endif %}
+                        {% if phase.done %}<i class="fa fa-check text-white text-xs"></i>{% endif %}
                     </div>
                     <div class="md:w-1/2 {% if loop.index is even %}md:pr-8{% else %}md:pl-8{% endif %}">
                         <div class="md:hidden font-semibold text-slate-900">{{ phase.name }}</div>
@@ -184,17 +152,15 @@
         </div>
     </div>
 </section>
+{% endif %}
 
 {# ── Team ── #}
+{% if h.team %}
 <section id="team" class="py-20 px-6 bg-slate-50">
     <div class="max-w-6xl mx-auto">
         <h2 class="text-3xl font-bold text-slate-900 mb-12">Het team</h2>
         <div class="grid md:grid-cols-3 gap-6">
-            {% for member in [
-                { name: '[Naam onderzoeker 1]', role: 'Projectleider' },
-                { name: '[Naam onderzoeker 2]', role: 'Literatuuronderzoek' },
-                { name: '[Naam onderzoeker 3]', role: 'Praktijkonderzoek' }
-            ] %}
+            {% for member in h.team %}
             <div class="bg-white rounded-2xl p-6 border border-slate-200">
                 <div class="w-12 h-12 rounded-full bg-sail-100 flex items-center justify-center mb-4">
                     <i class="fa fa-user text-sail-500"></i>
@@ -206,6 +172,7 @@
         </div>
     </div>
 </section>
+{% endif %}
 
 {# ── Footer ── #}
 <footer id="contact" class="py-12 px-6 bg-slate-900 text-slate-400">
@@ -214,12 +181,14 @@
             <span class="w-7 h-7 rounded-lg bg-sail-500 flex items-center justify-center">
                 <span class="text-white font-bold text-xs">S</span>
             </span>
-            <span class="text-white font-medium">SAIL Project</span>
+            <span class="text-white font-medium">{{ site.title }}</span>
         </div>
+        {% if h.contact.email %}
         <div class="text-sm">
-            Vragen? <a href="mailto:info@sailproject.ai" class="text-sail-400 hover:text-sail-300">info@sailproject.ai</a>
+            Vragen? <a href="mailto:{{ h.contact.email }}" class="text-sail-400 hover:text-sail-300">{{ h.contact.email }}</a>
         </div>
-        <div class="text-xs">© 2025 SAIL Project</div>
+        {% endif %}
+        <div class="text-xs">{{ h.contact.footer_text ?: '© 2025 SAIL Project' }}</div>
     </div>
 </footer>
 

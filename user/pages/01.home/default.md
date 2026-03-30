@@ -1,54 +1,75 @@
 ---
 title: SAIL Project
-body_classes: title-center title-h1h2
+
+hero:
+  subtitle: Onderzoek naar AI in het hoger onderwijs
+  intro: 'SAIL (Shaping AI Literacy) is een onderzoeksproject dat docenten en opleidingen handvatten biedt om verantwoord om te gaan met artificiële intelligentie in de onderwijspraktijk.'
+  cta_text: Bekijk de Wiki of Research
+  cta_url: /wiki
+  second_cta_text: Meer over het project
+
+project:
+  description1: 'Het gebruik van AI-tools in het onderwijs groeit razendsnel. Studenten gebruiken generatieve AI voor opdrachten, docenten experimenteren met AI-gestuurde feedback, en instellingen worstelen met beleid rond academische integriteit.'
+  description2: 'Het SAIL-project beantwoordt de vraag: hoe navigeer je als opleiding verantwoord door dit landschap?'
+  checks:
+    - text: Systematisch literatuuronderzoek (87 publicaties)
+    - text: Praktijkonderzoek met Vlaamse docenten
+    - text: Co-creatie van concrete richtlijnen
+  stats:
+    - number: '87'
+      label: Geanalyseerde publicaties
+    - number: '4'
+      label: Onderzoeksfasen
+    - number: '2025'
+      label: Publicatie eindgids
+    - number: 'BE'
+      label: Focus Vlaamse context
+
+wiki_sections:
+  - title: Inleiding
+    description: Onderzoeksvragen en methodologie
+    icon: fa-flag-o
+    url: /wiki/inleiding
+  - title: Literatuuronderzoek
+    description: Analyse van internationale literatuur
+    icon: fa-book
+    url: /wiki/literatuuronderzoek
+  - title: Bevindingen
+    description: Synthese en tussentijdse conclusies
+    icon: fa-lightbulb-o
+    url: /wiki/bevindingen
+  - title: Richtlijnen
+    description: Ontwikkeling van de finale gids
+    icon: fa-compass
+    url: /wiki/richtlijnen
+
+timeline:
+  - name: Literatuuronderzoek
+    period: Sept 2024 – Jan 2025
+    status: Lopend
+    done: true
+  - name: Praktijkonderzoek
+    period: Febr – April 2025
+    status: Gepland
+    done: false
+  - name: Co-creatie richtlijnen
+    period: Mei – Juni 2025
+    status: Gepland
+    done: false
+  - name: Publicatie eindgids
+    period: Sept 2025
+    status: Gepland
+    done: false
+
+team:
+  - name: '[Naam onderzoeker 1]'
+    role: Projectleider
+  - name: '[Naam onderzoeker 2]'
+    role: Literatuuronderzoek
+  - name: '[Naam onderzoeker 3]'
+    role: Praktijkonderzoek
+
+contact:
+  email: info@sailproject.ai
+  footer_text: '© 2025 SAIL Project'
 ---
-
-# SAIL Project
-## Onderzoek naar AI in het hoger onderwijs
-
-SAIL (Shaping AI Literacy) is een onderzoeksproject dat docenten en opleidingen handvatten biedt om verantwoord om te gaan met artificiële intelligentie in de onderwijspraktijk.
-
----
-
-## Over het project
-
-Het gebruik van AI-tools in het onderwijs groeit razendsnel. Studenten gebruiken ChatGPT voor opdrachten, docenten experimenteren met AI-gestuurde feedback, en instellingen worstelen met beleid rond academische integriteit. Maar hoe navigeer je als opleiding door dit landschap?
-
-Het SAIL-project brengt internationaal literatuuronderzoek, praktijkervaring en co-creatie met docenten samen tot een **praktische richtlijnengids** — bruikbaar voor elke opleiding in het Vlaamse hoger onderwijs.
-
----
-
-## Wat vind je hier?
-
-<div class="notices info">
-Dit platform groeit mee met ons onderzoek. Alle bevindingen worden hier stap voor stap gepubliceerd.
-</div>
-
-- **[Wiki of Research →](/wiki)** — Ons volledige literatuuronderzoek, gestructureerd en doorzoekbaar
-- **Richtlijnen** *(binnenkort)* — De finale gids voor opleidingen en docenten
-- **Literatuurlijst** *(binnenkort)* — Onze volledige bibliografie via Raindrop.io
-
----
-
-## Het team
-
-| Naam | Rol |
-|------|-----|
-| [Naam onderzoeker 1] | Projectleider |
-| [Naam onderzoeker 2] | Literatuuronderzoek |
-| [Naam onderzoeker 3] | Praktijkonderzoek |
-
----
-
-## Tijdlijn
-
-| Fase | Periode | Status |
-|------|---------|--------|
-| Literatuuronderzoek | Sept 2024 – Jan 2025 | Lopend |
-| Praktijkonderzoek | Febr – April 2025 | Gepland |
-| Richtlijnen co-creatie | Mei – Juni 2025 | Gepland |
-| Publicatie eindgids | Sept 2025 | Gepland |
-
----
-
-*Geïnteresseerd in samenwerking of heb je vragen? [Neem contact op →](/contact)*

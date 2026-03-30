@@ -1,0 +1,166 @@
+title: Landingspagina
+extends@: default
+
+form:
+  fields:
+    tabs:
+      type: tabs
+      active: 1
+      fields:
+
+        # ── Tab 1: Hero ──
+        tab_hero:
+          type: tab
+          title: Hero
+
+          fields:
+            header.hero.subtitle:
+              type: text
+              label: Subtitel (onder de hoofdtitel)
+              placeholder: Onderzoek naar AI in het hoger onderwijs
+
+            header.hero.intro:
+              type: textarea
+              label: Intro tekst
+              rows: 3
+
+            header.hero.cta_text:
+              type: text
+              label: Knoptekst (primaire CTA)
+              placeholder: Bekijk de Wiki of Research
+
+            header.hero.cta_url:
+              type: text
+              label: Knop URL
+              placeholder: /wiki
+
+            header.hero.second_cta_text:
+              type: text
+              label: Knoptekst (secundaire knop)
+              placeholder: Meer over het project
+
+        # ── Tab 2: Project ──
+        tab_project:
+          type: tab
+          title: Project
+
+          fields:
+            header.project.description1:
+              type: textarea
+              label: Alinea 1
+              rows: 3
+
+            header.project.description2:
+              type: textarea
+              label: Alinea 2 (met vetgedrukt kernzin)
+              rows: 3
+
+            header.project.checks:
+              type: list
+              label: Checklijst
+              style: vertical
+              fields:
+                .text:
+                  type: text
+                  label: Punt
+
+            header.project.stats:
+              type: list
+              label: Statistieken (4 blokken)
+              style: vertical
+              fields:
+                .number:
+                  type: text
+                  label: Getal of afkorting
+                .label:
+                  type: text
+                  label: Omschrijving
+
+        # ── Tab 3: Wiki secties ──
+        tab_wiki:
+          type: tab
+          title: Wiki secties
+
+          fields:
+            header.wiki_sections:
+              type: list
+              label: Wiki-kaarten op homepage
+              style: vertical
+              fields:
+                .title:
+                  type: text
+                  label: Titel
+                .description:
+                  type: text
+                  label: Omschrijving
+                .icon:
+                  type: text
+                  label: Font Awesome icon (bv. fa-book)
+                .url:
+                  type: text
+                  label: URL
+
+        # ── Tab 4: Tijdlijn ──
+        tab_timeline:
+          type: tab
+          title: Tijdlijn
+
+          fields:
+            header.timeline:
+              type: list
+              label: Fasen
+              style: vertical
+              fields:
+                .name:
+                  type: text
+                  label: Naam fase
+                .period:
+                  type: text
+                  label: Periode
+                .status:
+                  type: text
+                  label: Status (bv. Lopend / Gepland)
+                .done:
+                  type: toggle
+                  label: Afgerond
+                  highlight: 1
+                  default: 0
+                  options:
+                    1: Ja
+                    0: Nee
+                  validate:
+                    type: bool
+
+        # ── Tab 5: Team ──
+        tab_team:
+          type: tab
+          title: Team
+
+          fields:
+            header.team:
+              type: list
+              label: Teamleden
+              style: vertical
+              fields:
+                .name:
+                  type: text
+                  label: Naam
+                .role:
+                  type: text
+                  label: Rol
+
+        # ── Tab 6: Contact & Footer ──
+        tab_contact:
+          type: tab
+          title: Contact
+
+          fields:
+            header.contact.email:
+              type: text
+              label: E-mailadres
+              placeholder: info@sailproject.ai
+
+            header.contact.footer_text:
+              type: text
+              label: Footer tekst
+              placeholder: © 2025 SAIL Project
