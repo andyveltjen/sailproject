@@ -28,7 +28,7 @@
         <div class="max-w-3xl">
             <span class="inline-flex items-center gap-2 bg-sail-100 text-sail-700 text-xs font-medium px-3 py-1 rounded-full mb-6">
                 <span class="w-1.5 h-1.5 rounded-full bg-sail-500"></span>
-                Onderzoeksproject 2024–2025
+                Onderzoeksproject 2024–2027
             </span>
             <h1 class="text-5xl font-bold text-slate-900 leading-tight mb-4">
                 {{ page.title }}
@@ -41,7 +41,7 @@
             {% endif %}
             <div class="flex flex-wrap gap-4">
                 {% if h.hero.cta_text %}
-                <a href="{{ h.hero.cta_url ?: base_url_absolute ~ '/wiki' }}" class="inline-flex items-center gap-2 bg-sail-500 hover:bg-sail-600 text-white font-medium px-6 py-3 rounded-xl transition-colors shadow-lg shadow-sail-200">
+                <a href="{{ base_url_absolute }}/wiki" class="inline-flex items-center gap-2 bg-sail-500 hover:bg-sail-600 text-white font-medium px-6 py-3 rounded-xl transition-colors shadow-lg shadow-sail-200">
                     {{ h.hero.cta_text }} <i class="fa fa-arrow-right"></i>
                 </a>
                 {% endif %}
@@ -120,32 +120,79 @@
 {# ── Tijdlijn ── #}
 {% if h.timeline %}
 <section class="py-20 px-6">
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-4xl mx-auto">
         <h2 class="text-3xl font-bold text-slate-900 mb-12">Tijdlijn</h2>
-        <div class="relative">
-            <div class="absolute left-4 top-0 bottom-0 w-px bg-slate-200 md:left-1/2"></div>
-            <div class="space-y-8">
-                {% for phase in h.timeline %}
-                <div class="flex items-center gap-6 pl-12 md:pl-0 {% if loop.index is even %}md:flex-row-reverse{% endif %}">
-                    <div class="hidden md:block w-1/2 {% if loop.index is even %}text-left pl-8{% else %}text-right pr-8{% endif %}">
-                        <div class="font-semibold text-slate-900">{{ phase.name }}</div>
-                        <div class="text-sm text-slate-400">{{ phase.period }}</div>
-                    </div>
-                    <div class="absolute left-4 md:left-1/2 md:-translate-x-1/2 w-8 h-8 rounded-full border-2 flex items-center justify-center
+
+        {# Desktop: 3-kolommen grid met vaste middenkolom voor de lijn en bollen #}
+        <div class="hidden md:block">
+            {% for phase in h.timeline %}
+            <div class="grid items-center" style="grid-template-columns: 1fr 2rem 1fr;">
+
+                {# Linkerkolom #}
+                {% if loop.index is odd %}
+                <div class="text-right pr-6">
+                    <div class="font-semibold text-slate-900">{{ phase.name }}</div>
+                    <div class="text-sm text-slate-400">{{ phase.period }}</div>
+                </div>
+                {% else %}
+                <div class="text-right pr-6">
+                    <span class="inline-block text-xs px-2.5 py-1 rounded-full
+                        {% if phase.done %}bg-sail-100 text-sail-700{% else %}bg-slate-100 text-slate-500{% endif %}">
+                        {{ phase.status }}
+                    </span>
+                </div>
+                {% endif %}
+
+                {# Middenkolom: bol + lijnstukjes #}
+                <div class="flex flex-col items-center">
+                    {% if not loop.first %}
+                    <div class="w-px h-6 bg-slate-200"></div>
+                    {% endif %}
+                    <div class="w-8 h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0
                         {% if phase.done %}bg-sail-500 border-sail-500{% else %}bg-white border-slate-300{% endif %}">
                         {% if phase.done %}<i class="fa fa-check text-white text-xs"></i>{% endif %}
                     </div>
-                    <div class="md:w-1/2 {% if loop.index is even %}md:pr-8{% else %}md:pl-8{% endif %}">
-                        <div class="md:hidden font-semibold text-slate-900">{{ phase.name }}</div>
-                        <div class="md:hidden text-sm text-slate-400">{{ phase.period }}</div>
-                        <span class="inline-block mt-1 text-xs px-2 py-0.5 rounded-full
-                            {% if phase.done %}bg-sail-100 text-sail-700{% else %}bg-slate-100 text-slate-500{% endif %}">
-                            {{ phase.status }}
-                        </span>
-                    </div>
+                    {% if not loop.last %}
+                    <div class="w-px h-6 bg-slate-200"></div>
+                    {% endif %}
                 </div>
-                {% endfor %}
+
+                {# Rechterkolom #}
+                {% if loop.index is odd %}
+                <div class="pl-6">
+                    <span class="inline-block text-xs px-2.5 py-1 rounded-full
+                        {% if phase.done %}bg-sail-100 text-sail-700{% else %}bg-slate-100 text-slate-500{% endif %}">
+                        {{ phase.status }}
+                    </span>
+                </div>
+                {% else %}
+                <div class="pl-6">
+                    <div class="font-semibold text-slate-900">{{ phase.name }}</div>
+                    <div class="text-sm text-slate-400">{{ phase.period }}</div>
+                </div>
+                {% endif %}
+
             </div>
+            {% endfor %}
+        </div>
+
+        {# Mobiel: verticale lijst #}
+        <div class="md:hidden relative pl-10">
+            <div class="absolute left-4 top-0 bottom-0 w-px bg-slate-200"></div>
+            {% for phase in h.timeline %}
+            <div class="relative mb-8">
+                <div class="absolute -left-6 w-8 h-8 rounded-full border-2 flex items-center justify-center
+                    {% if phase.done %}bg-sail-500 border-sail-500{% else %}bg-white border-slate-300{% endif %}">
+                    {% if phase.done %}<i class="fa fa-check text-white text-xs"></i>{% endif %}
+                </div>
+                <div class="font-semibold text-slate-900">{{ phase.name }}</div>
+                <div class="text-sm text-slate-400 mb-1">{{ phase.period }}</div>
+                <span class="inline-block text-xs px-2.5 py-1 rounded-full
+                    {% if phase.done %}bg-sail-100 text-sail-700{% else %}bg-slate-100 text-slate-500{% endif %}">
+                    {{ phase.status }}
+                </span>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
