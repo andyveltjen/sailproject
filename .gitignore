@@ -5,6 +5,18 @@
 /composer.json
 /composer.lock
 /now.json
+/assets/
+/webserver-configs/
+/.phan/
+/.github/
+*.code-workspace
+.htaccess
+CHANGELOG.md
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+LICENSE.txt
+README.md
+SECURITY.md
 
 # Cache, logs, tmp
 /cache/*
@@ -18,7 +30,7 @@
 !tmp/.gitkeep
 !backup/.gitkeep
 
-# Assets (automatisch gegenereerd)
+# Automatisch gegenereerde afbeeldingen
 /images/
 
 # OS bestanden
@@ -33,9 +45,8 @@ Thumbs.db
 /user/data/
 /user/accounts/
 
-# Wel deployen
-!/user/
-!/user/config/
-!/user/pages/
-!/user/plugins/
-!/user/themes/
+# Plugins: enkel onze eigen bestanden, geen vendor/updates
+/user/plugins/*/vendor/
+/user/plugins/*/node_modules/
+/user/plugins/*/*.lock
+/user/plugins/*/hebe.json
