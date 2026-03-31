@@ -1,6 +1,19 @@
-title: SAIL Project
+title: 'SAIL Project'
+default_lang: nl
 author:
-  name: SAIL Research Team
-  email: 'info@sailproject.ai'
+  name: 'SAIL Research Team'
+  email: info@sailproject.ai
+taxonomies:
+  - category
+  - tag
 metadata:
   description: 'SAIL Project — onderzoek naar AI in het onderwijs'
+summary:
+  enabled: true
+  format: short
+  size: 300
+  delimiter: '==='
+redirects: null
+routes: null
+blog:
+  route: /blog

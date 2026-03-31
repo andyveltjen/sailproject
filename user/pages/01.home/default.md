@@ -1,26 +1,26 @@
 ---
-title: SAIL Project
+title: Scenario's AI en leren
 
 hero:
-  subtitle: Onderzoek naar AI in het hoger onderwijs
-  intro: 'SAIL (Shaping AI Literacy) is een onderzoeksproject dat docenten en opleidingen handvatten biedt om verantwoord om te gaan met artificiële intelligentie in de onderwijspraktijk.'
+  subtitle: Veerkrachtig onderwijs ontwerpen in tijden van AI
+  intro: 'SAIL (Scenario’s AI en Leren) is een onderzoeksproject van het expertisecentrum Education & Development van UCLL dat, in co-creatie met docenten, studenten en het werkveld, onderzoekt hoe het hoger onderwijs studenten kan ondersteunen bij het ontwikkelen van competenties op het gewenste niveau van zelfstandigheid in een tijdperk van generatieve AI.'
   cta_text: Bekijk de Wiki of Research
   cta_url: /wiki
   second_cta_text: Meer over het project
 
 project:
-  description1: 'Het gebruik van AI-tools in het onderwijs groeit razendsnel. Studenten gebruiken generatieve AI voor opdrachten, docenten experimenteren met AI-gestuurde feedback, en instellingen worstelen met beleid rond academische integriteit.'
-  description2: 'Het SAIL-project beantwoordt de vraag: hoe navigeer je als opleiding verantwoord door dit landschap?'
+  description1: 'Generatieve AI confronteert het hoger onderwijs met fundamentele keuzes: welke competenties willen we nog dat studenten zelfstandig beheersen, en hoe zetten we GenAI in zonder het leerproces te ondermijnen?'
+  description2: 'Het SAIL-project onderzoekt hoe opleidingen studenten kunnen ondersteunen in het ontwikkelen van competenties op het gewenste niveau van zelfstandigheid in een tijdperk van GenAI. Daarbij staat centraal wanneer GenAI een meerwaarde is voor leren — en wanneer bewust niet.'
   checks:
-    - text: Systematisch literatuuronderzoek (87 publicaties)
-    - text: Praktijkonderzoek met Vlaamse docenten
-    - text: Co-creatie van concrete richtlijnen
+    - text: Systematisch literatuuronderzoek als basis voor competentieanalyse
+    - text: Toekomstgerichte scenario planning met werkveld, docenten en studenten
+    - text: Iteratief ontwerp, testing en evaluatie van onderwijsscenario’s (EDR)
   stats:
     - number: '87'
       label: Geanalyseerde publicaties
     - number: '4'
       label: Onderzoeksfasen
-    - number: '2025'
+    - number: '2027'
       label: Publicatie eindgids
     - number: 'BE'
       label: Focus Vlaamse context
@@ -44,32 +44,34 @@ wiki_sections:
     url: /wiki/richtlijnen
 
 timeline:
-  - name: Literatuuronderzoek
-    period: Sept 2024 – Jan 2025
+  - name: Literatuuronderzoek & competentieanalyse
+    period: Sept 2025 – Jan 2026
     status: Lopend
-    done: true
-  - name: Praktijkonderzoek
-    period: Febr – April 2025
+    done: false
+  - name: Ontwerp onderwijsscenario’s
+    period: Mei 2026 – Aug 2026
     status: Gepland
     done: false
-  - name: Co-creatie richtlijnen
-    period: Mei – Juni 2025
+  - name: Testing & evaluatie – Cyclus 1
+    period: Sept 2026 – Jan 2027
     status: Gepland
     done: false
-  - name: Publicatie eindgids
-    period: Sept 2025
+  - name: Ontwerp & optimalisatie – Cyclus 2
+    period: Feb 2027 - Aug 2027
+    status: Gepland
+    done: false
+  - name: Verdieping & brede implementatie
+    period: Sept 2027 - Aug 2028
     status: Gepland
     done: false
 
 team:
-  - name: '[Naam onderzoeker 1]'
-    role: Projectleider
-  - name: '[Naam onderzoeker 2]'
-    role: Literatuuronderzoek
-  - name: '[Naam onderzoeker 3]'
-    role: Praktijkonderzoek
+  - name: 'Andy Veltjen'
+    role: Projectleider & Researcher
+  - name: 'Steven Verjans'
+    role: Researcher
 
 contact:
   email: info@sailproject.ai
-  footer_text: '© 2025 SAIL Project'
+  footer_text: '© 2026 SAIL Project'
 ---

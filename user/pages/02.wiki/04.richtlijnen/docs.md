@@ -1,13 +1,12 @@
 ---
 title: Richtlijnen
 taxonomy:
-  category: docs
+    category:
+        - docs
 ---
 
-# Richtlijnen voor opleidingen en docenten
-
 <div class="notices info">
-De finale richtlijnengids is gepland voor publicatie in september 2025. Dit onderdeel toont de ontwikkeling van de richtlijnen in real-time.
+De finale richtlijnengids is gepland voor publicatie in september 2027. Dit onderdeel toont de ontwikkeling van de richtlijnen in real-time.
 </div>
 
 ## Opzet van de gids

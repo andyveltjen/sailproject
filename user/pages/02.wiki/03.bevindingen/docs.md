@@ -1,10 +1,9 @@
 ---
 title: Bevindingen
 taxonomy:
-  category: docs
+    category:
+        - docs
 ---
-
-# Tussentijdse bevindingen
 
 <div class="notices warning">
 Dit onderdeel wordt actief bijgewerkt naarmate ons onderzoek vordert. De bevindingen hieronder zijn tussentijds en nog niet definitief.

@@ -1,10 +1,9 @@
 ---
 title: Inleiding
 taxonomy:
-  category: docs
+    category:
+        - docs
 ---
-
-# Inleiding
 
 ## Aanleiding
 

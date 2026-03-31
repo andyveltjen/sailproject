@@ -1,10 +1,9 @@
 ---
-title: Impact op leerprocessen
+title: 'Impact op leerprocessen'
 taxonomy:
-  category: docs
+    category:
+        - docs
 ---
-
-# Impact van AI op leerprocessen
 
 ## Inleiding
 

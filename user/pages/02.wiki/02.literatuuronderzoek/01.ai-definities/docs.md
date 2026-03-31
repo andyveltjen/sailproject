@@ -1,10 +1,9 @@
 ---
-title: AI-definities en concepten
+title: 'AI-definities en concepten'
 taxonomy:
-  category: docs
+    category:
+        - docs
 ---
-
-# AI-definities en concepten
 
 ## Wat is AI in onderwijscontext?
 

@@ -1,10 +1,9 @@
 ---
 title: Literatuuronderzoek
 taxonomy:
-  category: docs
+    category:
+        - docs
 ---
-
-# Literatuuronderzoek
 
 Dit onderdeel bundelt de analyse van internationale wetenschappelijke literatuur over AI in het hoger onderwijs. De literatuur is onderverdeeld in thematische clusters.
 

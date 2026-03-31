@@ -1,10 +1,9 @@
 ---
-title: Wiki of Research
+title: 'Wiki of Research'
 taxonomy:
-  category: docs
+    category:
+        - docs
 ---
-
-# Wiki of Research
 
 Welkom in de onderzoekswiki van het SAIL-project. Hier vind je al onze bevindingen, literatuuranalyses en concepten gestructureerd terug.
 
