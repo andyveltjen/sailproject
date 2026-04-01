@@ -84,7 +84,12 @@ team:
             name: 'Steven Verjans'
             role: Researcher
             email: steven.verjans@ucll.be
-            linkedin: 'https://www.linkedin.com/in/stevenverjans'
+            linkedin: 'https://www.linkedin.com/in/sverjans/'
+        -
+            name: 'Tobias Frenssen'
+            role: 'Head of Education & Development at UCLL'
+            email: Tobias.Frenssen@ucll.be
+            linkedin: 'https://www.linkedin.com/in/tobias-frenssen-400527295/'
 contact:
     email: info@sailproject.ai
     footer_text: '© 2026 SAIL Project'
