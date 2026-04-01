@@ -45,6 +45,11 @@ form:
           title: Project
 
           fields:
+            header.project.title:
+              type: text
+              label: Sectietitel
+              placeholder: Over het project
+
             header.project.description1:
               type: textarea
               label: Alinea 1
@@ -82,7 +87,17 @@ form:
           title: Wiki secties
 
           fields:
-            header.wiki_sections:
+            header.wiki_sections.title:
+              type: text
+              label: Sectietitel
+              placeholder: Wiki of Research
+
+            header.wiki_sections.subtitle:
+              type: text
+              label: Ondertitel
+              placeholder: Al ons onderzoek, gestructureerd en doorzoekbaar.
+
+            header.wiki_sections.items:
               type: list
               label: Wiki-kaarten op homepage
               style: vertical
@@ -106,7 +121,12 @@ form:
           title: Tijdlijn
 
           fields:
-            header.timeline:
+            header.timeline.title:
+              type: text
+              label: Sectietitel
+              placeholder: Tijdlijn
+
+            header.timeline.items:
               type: list
               label: Fasen
               style: vertical
@@ -137,7 +157,12 @@ form:
           title: Team
 
           fields:
-            header.team:
+            header.team.title:
+              type: text
+              label: Sectietitel
+              placeholder: Het team
+
+            header.team.items:
               type: list
               label: Teamleden
               style: vertical

@@ -9,6 +9,7 @@ hero:
   second_cta_text: Meer over het project
 
 project:
+  title: Over het project
   description1: 'Generatieve AI confronteert het hoger onderwijs met fundamentele keuzes: welke competenties willen we nog dat studenten zelfstandig beheersen, en hoe zetten we GenAI in zonder het leerproces te ondermijnen?'
   description2: 'Het SAIL-project onderzoekt hoe opleidingen studenten kunnen ondersteunen in het ontwikkelen van competenties op het gewenste niveau van zelfstandigheid in een tijdperk van GenAI. Daarbij staat centraal wanneer GenAI een meerwaarde is voor leren — en wanneer bewust niet.'
   checks:
@@ -20,12 +21,15 @@ project:
       label: Geanalyseerde publicaties
     - number: '4'
       label: Onderzoeksfasen
-    - number: '2027'
+    - number: '2028'
       label: Publicatie eindgids
     - number: 'BE'
       label: Focus Vlaamse context
 
 wiki_sections:
+  title: Wiki of Research
+  subtitle: Al ons onderzoek, gestructureerd en doorzoekbaar. Groeit mee naarmate het project vordert.
+  items:
   - title: Inleiding
     description: Onderzoeksvragen en methodologie
     icon: fa-flag-o
@@ -44,10 +48,12 @@ wiki_sections:
     url: /wiki/richtlijnen
 
 timeline:
+  title: Tijdlijn
+  items:
   - name: Literatuuronderzoek & competentieanalyse
-    period: Sept 2025 – Jan 2026
+    period: Sept 2025 – Apr 2026
     status: Lopend
-    done: false
+    done: true
   - name: Ontwerp onderwijsscenario’s
     period: Mei 2026 – Aug 2026
     status: Gepland
@@ -66,6 +72,8 @@ timeline:
     done: false
 
 team:
+  title: Het team
+  items:
   - name: 'Andy Veltjen'
     role: Projectleider & Researcher
   - name: 'Steven Verjans'
