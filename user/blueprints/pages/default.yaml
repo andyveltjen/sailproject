@@ -173,6 +173,14 @@ form:
                 .role:
                   type: text
                   label: Rol
+                .email:
+                  type: text
+                  label: E-mailadres
+                  placeholder: naam@ucll.be
+                .linkedin:
+                  type: text
+                  label: LinkedIn URL
+                  placeholder: 'https://www.linkedin.com/in/...'
 
         # ── Tab 6: Contact & Footer ──
         tab_contact:

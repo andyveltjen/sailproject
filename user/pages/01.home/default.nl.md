@@ -78,9 +78,13 @@ team:
         -
             name: 'Andy Veltjen'
             role: 'Projectleider & Researcher'
+            email: andy.veltjen@ucll.be
+            linkedin: 'https://www.linkedin.com/in/andyveltjen'
         -
             name: 'Steven Verjans'
             role: Researcher
+            email: steven.verjans@ucll.be
+            linkedin: 'https://www.linkedin.com/in/stevenverjans'
 contact:
     email: info@sailproject.ai
     footer_text: '© 2026 SAIL Project'
