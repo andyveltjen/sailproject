@@ -1,0 +1,25 @@
+name: SAIL Auto-translate
+slug: sail-autotranslate
+type: plugin
+version: 1.0.0
+description: Vertaalt .nl.md pagina's automatisch naar .en.md via DeepL bij elke opslaan in het admin dashboard.
+author:
+  name: SAIL Project — UCLL
+homepage: https://github.com/andyveltjen/sailproject
+keywords: deepl, translate, multilanguage
+bugs: https://github.com/andyveltjen/sailproject/issues
+license: MIT
+
+form:
+  validation: strict
+  fields:
+    enabled:
+      type: toggle
+      label: Plugin ingeschakeld
+      highlight: 1
+      default: 1
+      options:
+        1: Aan
+        0: Uit
+      validate:
+        type: bool
