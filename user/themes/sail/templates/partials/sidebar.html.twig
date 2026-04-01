@@ -38,11 +38,19 @@
         <i class="fa fa-arrow-left"></i> {{ 'SAIL.BACK_TO_PROJECT'|t }}
     </a>
     {% set current_lang = grav.language.getActive %}
+    {% set uri_path = grav.uri.path() %}
+    {% if uri_path starts with '/en/' %}
+        {% set base_path = uri_path|slice(3) %}
+    {% elseif uri_path == '/en' %}
+        {% set base_path = '' %}
+    {% else %}
+        {% set base_path = (uri_path == '/') ? '' : uri_path %}
+    {% endif %}
     <div class="flex items-center gap-1.5 text-xs text-slate-400">
-        <a href="{{ page.url(true, false, 'nl') }}"
+        <a href="{{ base_url_absolute }}{{ base_path ?: '/' }}"
            class="transition-colors {% if current_lang == 'nl' or not current_lang %}text-slate-700 font-semibold{% else %}hover:text-slate-600{% endif %}">NL</a>
         <span class="text-slate-300">·</span>
-        <a href="{{ page.url(true, false, 'en') }}"
+        <a href="{{ base_url_absolute }}/en{{ base_path }}"
            class="transition-colors {% if current_lang == 'en' %}text-slate-700 font-semibold{% else %}hover:text-slate-600{% endif %}">EN</a>
     </div>
 </div>
