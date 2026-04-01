@@ -139,7 +139,7 @@ class SailSearchPlugin extends Plugin
             : "Wiki content:\n\n{$context}\n\nQuestion: {$question}";
 
         $payload = json_encode([
-            'model'      => 'claude-3-haiku-20240307',
+            'model'      => 'claude-haiku-4-5-20251001',
             'max_tokens' => 512,
             'system'     => $system,
             'messages'   => [
@@ -170,7 +170,21 @@ class SailSearchPlugin extends Plugin
         }
 
         $data = json_decode($response, true);
-        return $data['content'][0]['text']
-            ?? ($is_nl ? 'Geen antwoord ontvangen.' : 'No answer received.');
+
+        // Succesvolle response
+        if (isset($data['content'][0]['text'])) {
+            return $data['content'][0]['text'];
+        }
+
+        // API-fout — geef de foutmelding terug voor diagnose
+        if (isset($data['error']['message'])) {
+            return ($is_nl ? '⚠ API-fout: ' : '⚠ API error: ') . $data['error']['message'];
+        }
+
+        // Onverwachte response
+        return ($is_nl
+            ? '⚠ Onverwacht antwoord van de AI. Response: '
+            : '⚠ Unexpected response from AI. Response: ')
+            . substr($response, 0, 200);
     }
 }
