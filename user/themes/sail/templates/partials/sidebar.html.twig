@@ -38,11 +38,12 @@
         <i class="fa fa-arrow-left"></i> {{ 'SAIL.BACK_TO_PROJECT'|t }}
     </a>
     {% set current_lang = grav.language.getActive %}
-    <div class="flex items-center gap-0.5 text-xs font-medium border border-slate-200 rounded-md overflow-hidden">
-        <a href="{{ base_url_absolute }}{{ page.rawRoute }}"
-           class="px-2 py-1 transition-colors {% if current_lang == 'nl' or not current_lang %}bg-sail-500 text-white{% else %}text-slate-400 hover:bg-slate-50{% endif %}">NL</a>
-        <a href="{{ base_url_absolute }}/en{{ page.rawRoute }}"
-           class="px-2 py-1 transition-colors {% if current_lang == 'en' %}bg-sail-500 text-white{% else %}text-slate-400 hover:bg-slate-50{% endif %}">EN</a>
+    <div class="flex items-center gap-1.5 text-xs text-slate-400">
+        <a href="{{ page.url(true, false, 'nl') }}"
+           class="transition-colors {% if current_lang == 'nl' or not current_lang %}text-slate-700 font-semibold{% else %}hover:text-slate-600{% endif %}">NL</a>
+        <span class="text-slate-300">·</span>
+        <a href="{{ page.url(true, false, 'en') }}"
+           class="transition-colors {% if current_lang == 'en' %}text-slate-700 font-semibold{% else %}hover:text-slate-600{% endif %}">EN</a>
     </div>
 </div>
 
