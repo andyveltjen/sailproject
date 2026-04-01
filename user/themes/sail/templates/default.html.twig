@@ -229,9 +229,7 @@
 <footer id="contact" class="py-12 px-6 bg-slate-900 text-slate-400">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-lg bg-sail-500 flex items-center justify-center">
-                <span class="text-white font-bold text-xs">S</span>
-            </span>
+            <img src="{{ url('theme://images/favicon.png') }}" alt="{{ site.title }}" class="w-7 h-7 rounded-lg">
             <span class="text-white font-medium">{{ site.title }}</span>
         </div>
         {% if h.contact.email %}
