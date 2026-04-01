@@ -6,7 +6,12 @@ SAIL:
   BTN_READ_WIKI: Lees de Wiki
   BTN_MORE_PROJECT: Meer over het project
   BACK_TO_PROJECT: Terug naar project
+  BACK_TO_PROJECT_BTN: Terug naar het project
   WIKI_SUBTITLE: Wiki of Research
+  WIKI_CONTENT: Inhoud
+  WIKI_INACTIVE_SHORT: Wiki is momenteel niet beschikbaar.
+  WIKI_INACTIVE_TITLE: Wiki of Research
+  WIKI_INACTIVE_MSG: 'De Wiki of Research is momenteel nog niet publiek beschikbaar. We werken aan de eerste inhoud en openen de wiki binnenkort.'
   PREV: Vorige
   NEXT: Volgende
   FOOTER_QUESTIONS: Vragen?
