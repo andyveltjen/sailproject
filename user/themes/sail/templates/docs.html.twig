@@ -116,57 +116,80 @@
 </div>
 
 <script>
+// ── DOM-ready helper (werkt ook als DOMContentLoaded al gevuurd is) ───────────
+function onDomReady(fn) {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fn);
+    } else {
+        fn();
+    }
+}
+
 // ── Highlight tekst op basis van ?hl= URL-parameter ──────────────────────────
 (function () {
     const phrase = new URLSearchParams(window.location.search).get('hl');
     if (!phrase) return;
-
-    // Wacht tot de DOM volledig geladen is
-    window.addEventListener('DOMContentLoaded', () => sailHighlightText(phrase));
+    onDomReady(() => sailHighlightText(phrase));
 })();
 
 function sailHighlightText(phrase) {
     const article = document.querySelector('article.prose');
     if (!article) return;
 
-    // Probeer progressief kortere versies als de volledige zin niet gevonden wordt
-    const words   = phrase.trim().split(/\s+/);
-    let   found   = false;
-
-    for (let len = words.length; len >= 3 && !found; len--) {
+    // 1. Probeer progressief kortere woordreeksen (volledige zin → 3 woorden)
+    const words = phrase.trim().split(/\s+/);
+    for (let len = words.length; len >= 3; len--) {
         const search = words.slice(0, len).join(' ').toLowerCase();
-        const walker = document.createTreeWalker(article, NodeFilter.SHOW_TEXT);
+        if (sailMarkText(article, search)) return;
+    }
 
-        while (walker.nextNode()) {
-            const node  = walker.currentNode;
-            const lower = node.textContent.toLowerCase();
-            const idx   = lower.indexOf(search);
-            if (idx === -1) continue;
-
-            try {
-                const range = document.createRange();
-                range.setStart(node, idx);
-                range.setEnd(node, Math.min(idx + search.length, node.textContent.length));
-
-                const mark = document.createElement('mark');
-                mark.className = 'sail-hl';
-                range.surroundContents(mark);
-                mark.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-                // Highlight verwijderen na animatie
-                setTimeout(() => mark.replaceWith(...mark.childNodes), 4000);
-            } catch (_) {
-                // Tekst loopt over elementen (bv. bold) — highlight de parent
-                const parent = node.parentElement;
-                parent.classList.add('sail-hl');
-                parent.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setTimeout(() => parent.classList.remove('sail-hl'), 4000);
-            }
-
-            found = true;
-            break;
+    // 2. Fallback: zoek een heading die een van de woorden bevat
+    const significant = words.filter(w => w.length > 4);
+    for (const heading of article.querySelectorAll('h1,h2,h3,h4')) {
+        const ht = heading.textContent.toLowerCase();
+        if (significant.some(w => ht.includes(w))) {
+            heading.classList.add('sail-hl');
+            heading.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => heading.classList.remove('sail-hl'), 4000);
+            return;
         }
     }
+
+    // 3. Laatste fallback: highlight de eerste paragraaf en scroll naar boven
+    const first = article.querySelector('p');
+    if (first) {
+        first.classList.add('sail-hl');
+        first.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => first.classList.remove('sail-hl'), 4000);
+    }
+}
+
+function sailMarkText(article, search) {
+    const walker = document.createTreeWalker(article, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+        const node  = walker.currentNode;
+        const lower = node.textContent.toLowerCase();
+        const idx   = lower.indexOf(search);
+        if (idx === -1) continue;
+
+        try {
+            const range = document.createRange();
+            range.setStart(node, idx);
+            range.setEnd(node, Math.min(idx + search.length, node.textContent.length));
+            const mark = document.createElement('mark');
+            mark.className = 'sail-hl';
+            range.surroundContents(mark);
+            mark.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => mark.replaceWith(...mark.childNodes), 4000);
+        } catch (_) {
+            const parent = node.parentElement;
+            parent.classList.add('sail-hl');
+            parent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => parent.classList.remove('sail-hl'), 4000);
+        }
+        return true;
+    }
+    return false;
 }
 
 function openSidebar() {
@@ -294,7 +317,7 @@ async function sailSearch() {
     if (!saved) return;
     try {
         const state = JSON.parse(saved);
-        window.addEventListener('DOMContentLoaded', () => {
+        onDomReady(() => {
             const input = document.getElementById('sail-search-input');
             if (input) input.value = state.question;
             sailRenderResults(
