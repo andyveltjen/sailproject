@@ -2,27 +2,26 @@ extends@: site
 
 form:
   fields:
-    tabs:
+    wiki_section:
+      type: section
+      title: Wiki of Research
+      underline: true
+
       fields:
-        wiki_tab:
-          type: tab
-          title: Wiki
+        wiki.active:
+          type: toggle
+          label: Wiki publiek zichtbaar
+          help: 'Aan = wiki is zichtbaar voor bezoekers. Uit = bezoekers zien een boodschap dat de wiki nog niet beschikbaar is.'
+          highlight: 1
+          default: 0
+          options:
+            1: Aan
+            0: Uit
+          validate:
+            type: bool
 
-          fields:
-            wiki.active:
-              type: toggle
-              label: Wiki publiek zichtbaar
-              help: 'Zet aan om de wiki te activeren voor bezoekers. Zet uit om een boodschap te tonen zolang de inhoud nog niet klaar is.'
-              highlight: 1
-              default: 0
-              options:
-                1: Aan
-                0: Uit
-              validate:
-                type: bool
-
-            wiki.inactive_message:
-              type: textarea
-              label: Boodschap bij inactieve wiki
-              help: 'Deze tekst zien bezoekers op alle wiki-pagina''s wanneer de wiki uitgeschakeld is.'
-              rows: 3
+        wiki.inactive_message:
+          type: textarea
+          label: Boodschap bij inactieve wiki
+          help: 'Deze tekst zien bezoekers wanneer de wiki uitgeschakeld is.'
+          rows: 3
