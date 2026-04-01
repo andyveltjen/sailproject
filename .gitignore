@@ -33,6 +33,10 @@ SECURITY.md
 # Automatisch gegenereerde afbeeldingen
 /images/
 
+# Omgevingsvariabelen (nooit committen)
+.env
+.env.*
+
 # OS bestanden
 .DS_Store
 Thumbs.db

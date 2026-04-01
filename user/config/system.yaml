@@ -16,16 +16,19 @@ http_x_forwarded:
   port: true
   ip: true
 languages:
-  supported: {  }
-  default_lang: null
-  include_default_lang: true
+  supported:
+    - nl
+    - en
+  default_lang: nl
+  include_default_lang: false
   include_default_lang_file_extension: true
   translations: true
   translations_fallback: true
   session_store_active: false
   http_accept_language: false
   override_locale: false
-  content_fallback: {  }
+  content_fallback:
+    en: nl
   pages_fallback_only: false
   debug: false
 home:

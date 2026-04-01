@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "MAMP Apache (Grav CMS)",
+      "runtimeExecutable": "/Applications/MAMP/bin/startApache.sh",
+      "runtimeArgs": [],
+      "port": 8888
+    },
+    {
+      "name": "Grav PHP Built-in Server",
+      "runtimeExecutable": "php",
+      "runtimeArgs": ["-S", "localhost:8080", "-t", "/Applications/MAMP/htdocs/sailproject"],
+      "port": 8080
+    }
+  ]
+}

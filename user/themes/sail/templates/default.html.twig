@@ -11,14 +11,24 @@
             <img src="{{ url('theme://images/logo.png') }}" alt="{{ site.title }}" class="h-9 w-auto">
         </a>
         <nav class="hidden md:flex items-center gap-6 text-sm text-slate-600">
-            <a href="{{ base_url_absolute }}" class="hover:text-sail-600 font-medium text-slate-900">Project</a>
-            <a href="{{ base_url_absolute }}/wiki" class="hover:text-sail-600">Wiki of Research</a>
-            <a href="#team" class="hover:text-sail-600">Team</a>
-            <a href="#contact" class="hover:text-sail-600">Contact</a>
+            <a href="{{ page.url }}" class="hover:text-sail-600 font-medium text-slate-900">{{ 'SAIL.NAV_PROJECT'|t }}</a>
+            <a href="{{ base_url_absolute }}/wiki" class="hover:text-sail-600">{{ 'SAIL.NAV_WIKI'|t }}</a>
+            <a href="#team" class="hover:text-sail-600">{{ 'SAIL.NAV_TEAM'|t }}</a>
+            <a href="#contact" class="hover:text-sail-600">{{ 'SAIL.NAV_CONTACT'|t }}</a>
         </nav>
-        <a href="{{ base_url_absolute }}/wiki" class="hidden md:inline-flex items-center gap-2 bg-sail-500 hover:bg-sail-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
-            Lees de Wiki <i class="fa fa-arrow-right text-xs"></i>
-        </a>
+        <div class="hidden md:flex items-center gap-3">
+            {# Taalwisselaar #}
+            {% set current_lang = grav.language.getActive %}
+            <div class="flex items-center gap-1 text-xs font-medium border border-slate-200 rounded-lg overflow-hidden">
+                <a href="{{ base_url_absolute }}{{ page.rawRoute }}"
+                   class="px-2.5 py-1.5 transition-colors {% if current_lang == 'nl' or not current_lang %}bg-sail-500 text-white{% else %}text-slate-500 hover:bg-slate-50{% endif %}">NL</a>
+                <a href="{{ base_url_absolute }}/en{{ page.rawRoute }}"
+                   class="px-2.5 py-1.5 transition-colors {% if current_lang == 'en' %}bg-sail-500 text-white{% else %}text-slate-500 hover:bg-slate-50{% endif %}">EN</a>
+            </div>
+            <a href="{{ base_url_absolute }}/wiki" class="inline-flex items-center gap-2 bg-sail-500 hover:bg-sail-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                {{ 'SAIL.BTN_READ_WIKI'|t }} <i class="fa fa-arrow-right text-xs"></i>
+            </a>
+        </div>
     </div>
 </header>
 

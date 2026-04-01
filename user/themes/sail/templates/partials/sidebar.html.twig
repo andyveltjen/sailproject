@@ -32,11 +32,18 @@
     <div class="text-sail-500 text-xs font-medium mt-1.5 pl-0.5">Wiki of Research</div>
 </div>
 
-{# Terug naar project #}
-<div class="px-4 pt-3 pb-1">
+{# Terug naar project + taalwisselaar #}
+<div class="px-4 pt-3 pb-1 flex items-center justify-between">
     <a href="{{ base_url_absolute }}" class="flex items-center gap-2 text-slate-400 hover:text-sail-600 text-xs transition-colors">
-        <i class="fa fa-arrow-left"></i> Terug naar project
+        <i class="fa fa-arrow-left"></i> {{ 'SAIL.BACK_TO_PROJECT'|t }}
     </a>
+    {% set current_lang = grav.language.getActive %}
+    <div class="flex items-center gap-0.5 text-xs font-medium border border-slate-200 rounded-md overflow-hidden">
+        <a href="{{ base_url_absolute }}{{ page.rawRoute }}"
+           class="px-2 py-1 transition-colors {% if current_lang == 'nl' or not current_lang %}bg-sail-500 text-white{% else %}text-slate-400 hover:bg-slate-50{% endif %}">NL</a>
+        <a href="{{ base_url_absolute }}/en{{ page.rawRoute }}"
+           class="px-2 py-1 transition-colors {% if current_lang == 'en' %}bg-sail-500 text-white{% else %}text-slate-400 hover:bg-slate-50{% endif %}">EN</a>
+    </div>
 </div>
 
 {# Navigatie #}
