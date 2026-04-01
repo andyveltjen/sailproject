@@ -53,11 +53,11 @@
             <p class="text-xl text-slate-500 leading-relaxed mb-10 max-w-2xl">{{ h.hero.intro }}</p>
             {% endif %}
             <p class="text-sm text-slate-400 mb-8">
-                Een initiatief van het expertisecentrum
+                {{ 'SAIL.INITIATIVE'|t }}
                 <a href="https://research-expertise.ucll.be/en/expertcenters/education-development"
                    target="_blank" rel="noopener noreferrer"
                    class="text-sail-500 hover:text-sail-600 underline underline-offset-2 transition-colors">Education &amp; Development</a>
-                van Hogeschool UCLL
+                {{ 'SAIL.INITIATIVE_OF'|t }}
             </p>
             <div class="flex flex-wrap gap-4">
                 {% if h.hero.cta_text %}
