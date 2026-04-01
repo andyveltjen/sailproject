@@ -141,15 +141,19 @@ class SailSearchPlugin extends Plugin
             ? "Je bent een onderzoeksassistent voor het SAIL-project (Scenario's AI en Leren, UCLL). "
             . "Beantwoord vragen uitsluitend op basis van de aangeleverde wiki-inhoud (de ID's zijn de URL-paden). "
             . "Wees beknopt: maximaal 4 zinnen. "
-            . "Sluit je antwoord altijd af met een nieuwe regel die begint met 'REFS:' gevolgd door de ID's van de gebruikte secties, gescheiden door komma's. "
-            . "Gebruik enkel ID's uit deze lijst: {$ids_list}. "
-            . "Als het antwoord niet in de wiki staat, schrijf dan 'REFS:' zonder ID's."
+            . "Sluit je antwoord altijd af met een nieuwe regel die begint met 'REFS:'. "
+            . "Formaat per referentie: ID::ankertekst — waarbij ankertekst een aaneengesloten reeks van 4 tot 6 woorden is "
+            . "die letterlijk (exact, kleine letters) voorkomt in de betreffende wiki-sectie en het relevante fragment aanwijst. "
+            . "Meerdere referenties scheiden met komma. Gebruik enkel ID's uit: {$ids_list}. "
+            . "Als het antwoord niet in de wiki staat, schrijf 'REFS:' zonder inhoud."
             : "You are a research assistant for the SAIL project (Scenarios AI and Learning, UCLL). "
             . "Answer questions solely based on the provided wiki content (IDs are URL paths). "
             . "Be concise: maximum 4 sentences. "
-            . "Always end your answer with a new line starting with 'REFS:' followed by the IDs of sections you used, comma-separated. "
-            . "Only use IDs from this list: {$ids_list}. "
-            . "If the answer is not in the wiki, write 'REFS:' with no IDs.";
+            . "Always end your answer with a new line starting with 'REFS:'. "
+            . "Format per reference: ID::anchortext — where anchortext is a verbatim sequence of 4-6 words "
+            . "(exact, lowercase) that appears literally in that wiki section and points to the relevant passage. "
+            . "Separate multiple references with a comma. Only use IDs from: {$ids_list}. "
+            . "If the answer is not in the wiki, write 'REFS:' with no content.";
 
         $user_msg = $is_nl
             ? "Wiki-inhoud:\n\n{$context}\n\nVraag: {$question}"
@@ -198,10 +202,18 @@ class SailSearchPlugin extends Plugin
         $refs = [];
         if (preg_match('/\nREFS:\s*(.*)$/s', $full_text, $rm)) {
             $full_text = trim(preg_replace('/\nREFS:.*$/s', '', $full_text));
-            $ref_ids   = array_filter(array_map('trim', explode(',', $rm[1])));
-            foreach ($ref_ids as $id) {
+            $ref_items = array_filter(array_map('trim', explode(',', $rm[1])));
+            foreach ($ref_items as $item) {
+                // Formaat: /wiki/pagina::ankertekst  of enkel  /wiki/pagina
+                $parts  = explode('::', $item, 2);
+                $id     = trim($parts[0]);
+                $phrase = isset($parts[1]) ? trim($parts[1]) : '';
                 if (isset($page_map[$id])) {
-                    $refs[] = ['path' => $id, 'title' => $page_map[$id]];
+                    $refs[] = [
+                        'path'   => $id,
+                        'title'  => $page_map[$id],
+                        'phrase' => $phrase,
+                    ];
                 }
             }
         }

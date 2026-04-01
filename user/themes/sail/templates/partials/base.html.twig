@@ -79,6 +79,19 @@
         .sidebar-link.active { background: #edf5f7; color: #4a7c8c; font-weight: 600; }
         .sidebar-link.parent > span { color: #2f5464; font-weight: 500; }
 
+        /* Zoek-highlight animatie */
+        .sail-hl {
+            background: #fde68a;
+            border-radius: 3px;
+            padding: 1px 2px;
+            animation: sail-hl-fade 4s ease forwards;
+        }
+        @keyframes sail-hl-fade {
+            0%   { background: #fde68a; }
+            60%  { background: #fde68a; }
+            100% { background: transparent; }
+        }
+
         /* Mobile sidebar */
         @media (max-width: 768px) {
             #wiki-sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }

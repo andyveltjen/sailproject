@@ -116,6 +116,59 @@
 </div>
 
 <script>
+// ── Highlight tekst op basis van ?hl= URL-parameter ──────────────────────────
+(function () {
+    const phrase = new URLSearchParams(window.location.search).get('hl');
+    if (!phrase) return;
+
+    // Wacht tot de DOM volledig geladen is
+    window.addEventListener('DOMContentLoaded', () => sailHighlightText(phrase));
+})();
+
+function sailHighlightText(phrase) {
+    const article = document.querySelector('article.prose');
+    if (!article) return;
+
+    // Probeer progressief kortere versies als de volledige zin niet gevonden wordt
+    const words   = phrase.trim().split(/\s+/);
+    let   found   = false;
+
+    for (let len = words.length; len >= 3 && !found; len--) {
+        const search = words.slice(0, len).join(' ').toLowerCase();
+        const walker = document.createTreeWalker(article, NodeFilter.SHOW_TEXT);
+
+        while (walker.nextNode()) {
+            const node  = walker.currentNode;
+            const lower = node.textContent.toLowerCase();
+            const idx   = lower.indexOf(search);
+            if (idx === -1) continue;
+
+            try {
+                const range = document.createRange();
+                range.setStart(node, idx);
+                range.setEnd(node, Math.min(idx + search.length, node.textContent.length));
+
+                const mark = document.createElement('mark');
+                mark.className = 'sail-hl';
+                range.surroundContents(mark);
+                mark.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Highlight verwijderen na animatie
+                setTimeout(() => mark.replaceWith(...mark.childNodes), 4000);
+            } catch (_) {
+                // Tekst loopt over elementen (bv. bold) — highlight de parent
+                const parent = node.parentElement;
+                parent.classList.add('sail-hl');
+                parent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => parent.classList.remove('sail-hl'), 4000);
+            }
+
+            found = true;
+            break;
+        }
+    }
+}
+
 function openSidebar() {
     document.getElementById('wiki-sidebar').classList.add('open');
     document.getElementById('sidebar-overlay').classList.remove('hidden');
@@ -173,7 +226,8 @@ async function sailSearch() {
             if (data.refs && data.refs.length > 0) {
                 const label = isNl ? 'Lees verder in:' : 'Read more in:';
                 const links = data.refs.map(r => {
-                    const href = rootUrl + langPrefix + r.path;
+                    let href = rootUrl + langPrefix + r.path;
+                    if (r.phrase) href += '?hl=' + encodeURIComponent(r.phrase);
                     return `<a href="${href}"
                                class="inline-flex items-center gap-1 text-[10px] bg-white border
                                       border-sail-200 text-sail-600 rounded-md px-2 py-1
