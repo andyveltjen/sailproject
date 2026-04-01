@@ -124,5 +124,14 @@ function closeSidebar() {
     document.getElementById('wiki-sidebar').classList.remove('open');
     document.getElementById('sidebar-overlay').classList.add('hidden');
 }
+function sailNavToggle(btn) {
+    const li   = btn.closest('li');
+    const ul   = li.querySelector('[data-nav-children]');
+    const icon = btn.querySelector('i');
+    if (ul) {
+        ul.classList.toggle('hidden');
+        icon.classList.toggle('rotate-90');
+    }
+}
 </script>
 {% endblock %}
