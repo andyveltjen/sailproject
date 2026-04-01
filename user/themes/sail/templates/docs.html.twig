@@ -133,5 +133,50 @@ function sailNavToggle(btn) {
         icon.classList.toggle('rotate-90');
     }
 }
+
+async function sailSearch() {
+    const box     = document.querySelector('[data-search-url]');
+    const input   = document.getElementById('sail-search-input');
+    const results = document.getElementById('sail-search-results');
+    if (!box || !input || !results) return;
+
+    const question = input.value.trim();
+    if (!question) { input.focus(); return; }
+
+    const url  = box.dataset.searchUrl;
+    const lang = box.dataset.lang || 'nl';
+    const isNl = lang !== 'en';
+
+    results.classList.remove('hidden');
+    results.innerHTML = `<span class="text-slate-400 flex items-center gap-1.5">
+        <i class="fa fa-spinner fa-spin text-sail-400"></i>
+        ${isNl ? 'Zoeken…' : 'Searching…'}
+    </span>`;
+
+    try {
+        const resp = await fetch(url, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ question, lang }),
+        });
+
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+
+        const data = await resp.json();
+
+        if (data.answer) {
+            results.innerHTML = `<div class="flex items-start gap-2">
+                <i class="fa fa-comment-o text-sail-400 mt-0.5 flex-shrink-0"></i>
+                <span>${data.answer.replace(/\n/g, '<br>')}</span>
+            </div>`;
+        } else {
+            results.innerHTML = isNl ? 'Geen antwoord gevonden.' : 'No answer found.';
+        }
+    } catch (e) {
+        results.innerHTML = `<span class="text-red-400">
+            ${isNl ? 'Er ging iets mis. Probeer opnieuw.' : 'Something went wrong. Please try again.'}
+        </span>`;
+    }
+}
 </script>
 {% endblock %}

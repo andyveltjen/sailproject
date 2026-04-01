@@ -16,5 +16,7 @@ summary:
 blog:
   route: /blog
 wiki:
-  active: false
+  active: true
   inactive_message: 'De Wiki of Research is momenteel nog niet publiek beschikbaar. We werken aan de eerste inhoud en openen de wiki binnenkort.'
+search:
+  active: true

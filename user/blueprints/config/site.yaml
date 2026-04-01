@@ -25,3 +25,21 @@ form:
           label: Boodschap bij inactieve wiki
           help: 'Deze tekst zien bezoekers wanneer de wiki uitgeschakeld is.'
           rows: 3
+
+    search_section:
+      type: section
+      title: AI Zoekfunctie
+      underline: true
+
+      fields:
+        search.active:
+          type: toggle
+          label: AI zoekfunctie actief
+          help: 'Aan = bezoekers kunnen vragen stellen aan de wiki via Claude AI. Vereist een ANTHROPIC_API_KEY in het .env bestand.'
+          highlight: 1
+          default: 1
+          options:
+            1: Aan
+            0: Uit
+          validate:
+            type: bool

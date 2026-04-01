@@ -1,0 +1,22 @@
+name: SAIL AI Search
+slug: sail-search
+type: plugin
+version: 1.0.0
+description: AI-gestuurde zoekmachine voor de Wiki of Research via Claude Haiku (Anthropic).
+author:
+  name: SAIL Project — UCLL
+license: MIT
+
+form:
+  validation: strict
+  fields:
+    enabled:
+      type: toggle
+      label: Plugin ingeschakeld
+      highlight: 1
+      default: 1
+      options:
+        1: Aan
+        0: Uit
+      validate:
+        type: bool

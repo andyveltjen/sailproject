@@ -79,7 +79,11 @@
 
 {% import _self as macro %}
 
-<nav class="px-3 pb-6 overflow-y-auto flex-1">
+{% set search_active = config.site.search.active is defined ? config.site.search.active : true %}
+{% set current_lang  = grav.language.getActive ?: 'nl' %}
+{% set root_url      = grav.uri.rootUrl(true) %}
+
+<nav class="px-3 pb-3 overflow-y-auto flex-1">
     <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2 mt-3">{{ 'SAIL.WIKI_CONTENT'|t }}</div>
     <ul class="space-y-0.5">
         {% set wiki_page = page.find('/wiki') %}
@@ -90,3 +94,36 @@
         {% endif %}
     </ul>
 </nav>
+
+{# ── AI Zoekfunctie ──────────────────────────────────────────────────────── #}
+{% if search_active %}
+<div class="px-3 pb-5 border-t border-slate-100 pt-3 mt-1"
+     data-search-url="{{ root_url }}/wiki-search"
+     data-lang="{{ current_lang }}">
+
+    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-1 mb-2 flex items-center gap-1.5">
+        <i class="fa fa-search text-[10px]"></i>
+        {{ current_lang == 'en' ? 'Ask the wiki' : 'Stel een vraag' }}
+    </div>
+
+    <div class="relative">
+        <input type="text"
+               id="sail-search-input"
+               placeholder="{{ current_lang == 'en' ? 'e.g. What is the impact of AI on learning?' : 'bv. Wat is de impact van AI op leren?' }}"
+               onkeydown="if(event.key==='Enter') sailSearch()"
+               class="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg
+                      px-3 py-2 pr-8 focus:outline-none focus:border-sail-300 focus:bg-white
+                      transition-colors placeholder-slate-300 text-slate-700">
+        <button onclick="sailSearch()"
+                title="{{ current_lang == 'en' ? 'Search' : 'Zoeken' }}"
+                class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-300
+                       hover:text-sail-500 transition-colors">
+            <i class="fa fa-paper-plane-o text-xs"></i>
+        </button>
+    </div>
+
+    <div id="sail-search-results"
+         class="hidden mt-2.5 text-xs text-slate-600 bg-sail-50 border border-sail-100
+                rounded-lg p-3 leading-relaxed max-h-52 overflow-y-auto"></div>
+</div>
+{% endif %}
