@@ -7,10 +7,9 @@
     {% set progress = page.collection({'items':{'@taxonomy':{'category': 'docs'}},'order': {'by': 'default', 'dir': 'asc'}}) %}
 {% endif %}
 
-{# Haal wiki_active op van de wiki-rootpagina #}
-{% set wiki_root = page.find('/wiki') %}
-{% set wiki_active = wiki_root.header.wiki_active is defined ? wiki_root.header.wiki_active : true %}
-{% set wiki_inactive_message = wiki_root.header.wiki_inactive_message ?: 'De Wiki of Research is momenteel nog niet publiek beschikbaar. We werken aan de eerste inhoud en openen de wiki binnenkort.' %}
+{# Haal wiki_active op van de site-configuratie #}
+{% set wiki_active = config.site.wiki.active is defined ? config.site.wiki.active : true %}
+{% set wiki_inactive_message = config.site.wiki.inactive_message ?: 'De Wiki of Research is momenteel nog niet publiek beschikbaar. We werken aan de eerste inhoud en openen de wiki binnenkort.' %}
 
 {% block body %}
 <div class="flex h-screen overflow-hidden bg-white">

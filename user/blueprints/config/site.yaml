@@ -1,16 +1,18 @@
-title: Wiki pagina
-extends@: default
+extends@: site
 
 form:
   fields:
     tabs:
       fields:
-        tab_options:
+        wiki_tab:
+          type: tab
+          title: Wiki
+
           fields:
-            header.wiki_active:
+            wiki.active:
               type: toggle
               label: Wiki publiek zichtbaar
-              help: 'Zet uit om de wiki te verbergen. De landingspagina blijft online.'
+              help: 'Zet aan om de wiki te activeren voor bezoekers. Zet uit om een boodschap te tonen zolang de inhoud nog niet klaar is.'
               highlight: 1
               default: 0
               options:
@@ -18,11 +20,9 @@ form:
                 0: Uit
               validate:
                 type: bool
-              ordering@: header.published
 
-            header.wiki_inactive_message:
+            wiki.inactive_message:
               type: textarea
               label: Boodschap bij inactieve wiki
+              help: 'Deze tekst zien bezoekers op alle wiki-pagina''s wanneer de wiki uitgeschakeld is.'
               rows: 3
-              placeholder: 'De Wiki of Research is momenteel nog niet publiek beschikbaar...'
-              ordering@: header.wiki_active
