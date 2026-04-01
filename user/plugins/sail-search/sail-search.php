@@ -72,21 +72,24 @@ class SailSearchPlugin extends Plugin
         }
 
         // Wiki-inhoud samenstellen en Claude aanroepen
-        $context = $this->buildWikiContext($lang);
-        $answer  = $this->askClaude($question, $context, $lang, $api_key);
+        [$context, $page_map] = $this->buildWikiContext($lang);
+        $result = $this->askClaude($question, $context, $page_map, $lang, $api_key);
 
-        echo json_encode(['answer' => $answer]);
+        echo json_encode($result);
         exit();
     }
 
     // ── Wiki-pagina's als context samenstellen ─────────────────────────────────
+    // Geeft zowel de context-string als een page_map terug:
+    // page_map = [ '/wiki/inleiding' => 'Introduction', ... ]
 
-    private function buildWikiContext(string $lang): string
+    private function buildWikiContext(string $lang): array
     {
         $pages_dir = GRAV_ROOT . '/user/pages/02.wiki';
-        if (!is_dir($pages_dir)) return '';
+        if (!is_dir($pages_dir)) return ['', []];
 
         $context  = '';
+        $page_map = [];
         $suffix   = '.' . $lang . '.md';
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($pages_dir, \FilesystemIterator::SKIP_DOTS)
@@ -96,8 +99,6 @@ class SailSearchPlugin extends Plugin
             if (!str_ends_with($file->getFilename(), $suffix)) continue;
 
             $raw = file_get_contents($file->getPathname());
-
-            // Frontmatter en body splitsen
             if (!preg_match('/^---\n(.*?)\n---\n?(.*)/s', $raw, $m)) continue;
 
             $yaml = $m[1];
@@ -108,31 +109,47 @@ class SailSearchPlugin extends Plugin
             preg_match('/^title:\s*[\'"]?(.+?)[\'"]?\s*$/m', $yaml, $t);
             $title = $t[1] ?? $file->getFilename();
 
-            $context .= "## {$title}\n\n{$body}\n\n---\n\n";
+            // Bestandspad omzetten naar Grav-URL (strip ordering-prefixen)
+            $dir      = dirname($file->getPathname());
+            $relative = str_replace(GRAV_ROOT . '/user/pages/', '', $dir);
+            $segments = explode('/', $relative);
+            $clean    = array_map(fn($s) => preg_replace('/^\d+\./', '', $s), $segments);
+            $url_path = '/' . implode('/', $clean);
+
+            $page_map[$url_path] = $title;
+            $context .= "## {$title} [ID:{$url_path}]\n\n{$body}\n\n---\n\n";
         }
 
-        return $context;
+        return [$context, $page_map];
     }
 
     // ── Claude Haiku aanroepen ─────────────────────────────────────────────────
+    // Geeft ['answer' => string, 'refs' => [['path'=>..., 'title'=>...]]] terug
 
     private function askClaude(
         string $question,
         string $context,
+        array  $page_map,
         string $lang,
         string $api_key
-    ): string {
+    ): array {
         $is_nl = $lang === 'nl';
+
+        $ids_list = implode(', ', array_keys($page_map));
 
         $system = $is_nl
             ? "Je bent een onderzoeksassistent voor het SAIL-project (Scenario's AI en Leren, UCLL). "
-            . "Beantwoord vragen uitsluitend op basis van de aangeleverde wiki-inhoud. "
-            . "Wees beknopt: maximaal 4 zinnen. Verwijs bij naam naar de relevante wiki-sectie. "
-            . "Als het antwoord niet in de wiki staat, zeg dat dan eerlijk."
+            . "Beantwoord vragen uitsluitend op basis van de aangeleverde wiki-inhoud (de ID's zijn de URL-paden). "
+            . "Wees beknopt: maximaal 4 zinnen. "
+            . "Sluit je antwoord altijd af met een nieuwe regel die begint met 'REFS:' gevolgd door de ID's van de gebruikte secties, gescheiden door komma's. "
+            . "Gebruik enkel ID's uit deze lijst: {$ids_list}. "
+            . "Als het antwoord niet in de wiki staat, schrijf dan 'REFS:' zonder ID's."
             : "You are a research assistant for the SAIL project (Scenarios AI and Learning, UCLL). "
-            . "Answer questions solely based on the provided wiki content. "
-            . "Be concise: maximum 4 sentences. Reference the relevant wiki section by name. "
-            . "If the answer is not in the wiki, say so honestly.";
+            . "Answer questions solely based on the provided wiki content (IDs are URL paths). "
+            . "Be concise: maximum 4 sentences. "
+            . "Always end your answer with a new line starting with 'REFS:' followed by the IDs of sections you used, comma-separated. "
+            . "Only use IDs from this list: {$ids_list}. "
+            . "If the answer is not in the wiki, write 'REFS:' with no IDs.";
 
         $user_msg = $is_nl
             ? "Wiki-inhoud:\n\n{$context}\n\nVraag: {$question}"
@@ -142,9 +159,7 @@ class SailSearchPlugin extends Plugin
             'model'      => 'claude-haiku-4-5-20251001',
             'max_tokens' => 512,
             'system'     => $system,
-            'messages'   => [
-                ['role' => 'user', 'content' => $user_msg],
-            ],
+            'messages'   => [['role' => 'user', 'content' => $user_msg]],
         ]);
 
         $ch = curl_init('https://api.anthropic.com/v1/messages');
@@ -164,27 +179,33 @@ class SailSearchPlugin extends Plugin
         curl_close($ch);
 
         if ($err) {
-            return $is_nl
+            return ['answer' => $is_nl
                 ? 'Verbindingsfout met de AI-service. Probeer opnieuw.'
-                : 'Connection error with AI service. Please try again.';
+                : 'Connection error with AI service. Please try again.',
+                'refs' => []];
         }
 
         $data = json_decode($response, true);
 
-        // Succesvolle response
-        if (isset($data['content'][0]['text'])) {
-            return $data['content'][0]['text'];
+        if (!isset($data['content'][0]['text'])) {
+            $msg = $data['error']['message'] ?? substr($response, 0, 200);
+            return ['answer' => ($is_nl ? '⚠ API-fout: ' : '⚠ API error: ') . $msg, 'refs' => []];
         }
 
-        // API-fout — geef de foutmelding terug voor diagnose
-        if (isset($data['error']['message'])) {
-            return ($is_nl ? '⚠ API-fout: ' : '⚠ API error: ') . $data['error']['message'];
+        $full_text = $data['content'][0]['text'];
+
+        // REFS-regel extraheren en uit de antwoordtekst verwijderen
+        $refs = [];
+        if (preg_match('/\nREFS:\s*(.*)$/s', $full_text, $rm)) {
+            $full_text = trim(preg_replace('/\nREFS:.*$/s', '', $full_text));
+            $ref_ids   = array_filter(array_map('trim', explode(',', $rm[1])));
+            foreach ($ref_ids as $id) {
+                if (isset($page_map[$id])) {
+                    $refs[] = ['path' => $id, 'title' => $page_map[$id]];
+                }
+            }
         }
 
-        // Onverwachte response
-        return ($is_nl
-            ? '⚠ Onverwacht antwoord van de AI. Response: '
-            : '⚠ Unexpected response from AI. Response: ')
-            . substr($response, 0, 200);
+        return ['answer' => $full_text, 'refs' => $refs];
     }
 }

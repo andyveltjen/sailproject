@@ -165,9 +165,34 @@ async function sailSearch() {
         const data = await resp.json();
 
         if (data.answer) {
+            const rootUrl    = box.dataset.searchUrl.replace('/wiki-search', '');
+            const langPrefix = lang === 'en' ? '/en' : '';
+
+            // Referentielinks opbouwen
+            let refsHtml = '';
+            if (data.refs && data.refs.length > 0) {
+                const label = isNl ? 'Lees verder in:' : 'Read more in:';
+                const links = data.refs.map(r => {
+                    const href = rootUrl + langPrefix + r.path;
+                    return `<a href="${href}"
+                               class="inline-flex items-center gap-1 text-[10px] bg-white border
+                                      border-sail-200 text-sail-600 rounded-md px-2 py-1
+                                      hover:bg-sail-50 transition-colors">
+                                <i class="fa fa-file-text-o text-[8px]"></i> ${r.title}
+                            </a>`;
+                }).join('');
+                refsHtml = `<div class="mt-2.5 pt-2 border-t border-sail-100">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wide">${label}</span>
+                    <div class="flex flex-wrap gap-1 mt-1">${links}</div>
+                </div>`;
+            }
+
             results.innerHTML = `<div class="flex items-start gap-2">
                 <i class="fa fa-comment-o text-sail-400 mt-0.5 flex-shrink-0"></i>
-                <span>${data.answer.replace(/\n/g, '<br>')}</span>
+                <div>
+                    <p>${data.answer.replace(/\n/g, '<br>')}</p>
+                    ${refsHtml}
+                </div>
             </div>`;
         } else {
             results.innerHTML = isNl ? 'Geen antwoord gevonden.' : 'No answer found.';
