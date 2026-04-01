@@ -101,9 +101,14 @@
      data-search-url="{{ root_url }}/wiki-search"
      data-lang="{{ current_lang }}">
 
-    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-1 mb-2 flex items-center gap-1.5">
-        <i class="fa fa-search text-[10px]"></i>
-        {{ current_lang == 'en' ? 'Ask the wiki' : 'Stel een vraag' }}
+    <div class="px-1 mb-2.5">
+        <div class="flex items-center gap-1.5 text-sail-600 font-semibold text-xs">
+            <i class="fa fa-magic text-[11px]"></i>
+            {{ current_lang == 'en' ? 'SAIL Assistant' : 'SAIL Assistent' }}
+        </div>
+        <div class="text-[10px] text-slate-400 mt-0.5 pl-0.5">
+            {{ current_lang == 'en' ? 'Fed by the Wiki of Research' : 'Gevoed door de Wiki of Research' }}
+        </div>
     </div>
 
     <div class="relative">
