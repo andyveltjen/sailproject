@@ -1,5 +1,7 @@
 ---
 title: 'Wiki of Research'
+wiki_active: false
+wiki_inactive_message: 'De Wiki of Research is momenteel nog niet publiek beschikbaar. We werken aan de eerste inhoud en openen de wiki binnenkort.'
 taxonomy:
     category:
         - docs

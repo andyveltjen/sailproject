@@ -1,0 +1,33 @@
+title: Wiki pagina
+extends@: default
+
+form:
+  fields:
+    tabs:
+      type: tabs
+      active: 1
+      fields:
+
+        tab_wiki_settings:
+          type: tab
+          title: Wiki instellingen
+
+          fields:
+            header.wiki_active:
+              type: toggle
+              label: Wiki publiek zichtbaar
+              help: 'Zet uit om de wiki te verbergen voor bezoekers. De landingspagina blijft gewoon online.'
+              highlight: 1
+              default: 0
+              options:
+                1: Aan
+                0: Uit
+              validate:
+                type: bool
+
+            header.wiki_inactive_message:
+              type: textarea
+              label: Boodschap bij inactieve wiki
+              help: 'Deze tekst zien bezoekers wanneer de wiki uitgeschakeld is.'
+              rows: 3
+              placeholder: 'De Wiki of Research is momenteel nog niet publiek beschikbaar...'
