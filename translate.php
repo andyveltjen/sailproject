@@ -20,9 +20,39 @@ $translate_fields = [
     'cta_text', 'second_cta_text', 'name', 'role', 'period',
 ];
 
+// ── Bescherm markdown-URLs voor vertaling ────────────────────────────────────
+// Vervangt URLs in [tekst](url) en ![alt](url) door tijdelijke placeholders,
+// zodat DeepL de paden niet vertaalt.
+function protect_urls(string $text): array {
+    $urls    = [];
+    $counter = 0;
+    $protected = preg_replace_callback(
+        '/(!?\[[^\]]*\])\(([^)]+)\)/',
+        function ($m) use (&$urls, &$counter) {
+            $placeholder       = 'SAILURL' . $counter++;
+            $urls[$placeholder] = $m[2];
+            return $m[1] . '(' . $placeholder . ')';
+        },
+        $text
+    );
+    return [$protected, $urls];
+}
+
+function restore_urls(string $text, array $urls): string {
+    foreach ($urls as $placeholder => $url) {
+        $text = str_replace($placeholder, $url, $text);
+        // Opvangen als DeepL spaties heeft ingevoegd (bv. SAIL URL0)
+        $text = str_replace(strtolower($placeholder), $url, $text);
+    }
+    return $text;
+}
+
 // ── Vertaalfunctie via DeepL ──────────────────────────────────────────────────
 function deepl_translate(string $text, string $api_key, string $api_url): string {
     if (trim($text) === '') return $text;
+
+    // URLs beschermen voor DeepL ze kan vertalen
+    [$protected, $urls] = protect_urls($text);
 
     $ch = curl_init($api_url);
     curl_setopt_array($ch, [
@@ -30,7 +60,7 @@ function deepl_translate(string $text, string $api_key, string $api_url): string
         CURLOPT_POST           => true,
         CURLOPT_HTTPHEADER     => ["Authorization: DeepL-Auth-Key $api_key"],
         CURLOPT_POSTFIELDS     => http_build_query([
-            'text'        => $text,
+            'text'        => $protected,
             'source_lang' => 'NL',
             'target_lang' => 'EN-GB',
         ]),
@@ -38,8 +68,11 @@ function deepl_translate(string $text, string $api_key, string $api_url): string
     $response = curl_exec($ch);
     curl_close($ch);
 
-    $data = json_decode($response, true);
-    return $data['translations'][0]['text'] ?? $text;
+    $data       = json_decode($response, true);
+    $translated = $data['translations'][0]['text'] ?? $protected;
+
+    // Originele URLs terugzetten
+    return restore_urls($translated, $urls);
 }
 
 // ── Frontmatter recursief vertalen ───────────────────────────────────────────

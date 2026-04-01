@@ -104,11 +104,43 @@ class SailAutotranslatePlugin extends Plugin
         return $data;
     }
 
+    // ── Bescherm markdown-URLs voor vertaling ─────────────────────────────────
+    // Vervangt URLs in [tekst](url) en ![alt](url) door tijdelijke placeholders,
+    // zodat DeepL de paden niet vertaalt.
+
+    private function protectUrls(string $text): array
+    {
+        $urls    = [];
+        $counter = 0;
+        $protected = preg_replace_callback(
+            '/(!?\[[^\]]*\])\(([^)]+)\)/',
+            function ($m) use (&$urls, &$counter) {
+                $placeholder        = 'SAILURL' . $counter++;
+                $urls[$placeholder] = $m[2];
+                return $m[1] . '(' . $placeholder . ')';
+            },
+            $text
+        );
+        return [$protected, $urls];
+    }
+
+    private function restoreUrls(string $text, array $urls): string
+    {
+        foreach ($urls as $placeholder => $url) {
+            $text = str_replace($placeholder, $url, $text);
+            $text = str_replace(strtolower($placeholder), $url, $text);
+        }
+        return $text;
+    }
+
     // ── DeepL API-aanroep ──────────────────────────────────────────────────────
 
     private function deepLTranslate(string $text, string $api_key, string $api_url): string
     {
         if (trim($text) === '') return $text;
+
+        // URLs beschermen voor DeepL ze kan vertalen
+        [$protected, $urls] = $this->protectUrls($text);
 
         $ch = curl_init($api_url);
         curl_setopt_array($ch, [
@@ -116,7 +148,7 @@ class SailAutotranslatePlugin extends Plugin
             CURLOPT_POST           => true,
             CURLOPT_HTTPHEADER     => ["Authorization: DeepL-Auth-Key $api_key"],
             CURLOPT_POSTFIELDS     => http_build_query([
-                'text'        => $text,
+                'text'        => $protected,
                 'source_lang' => 'NL',
                 'target_lang' => 'EN-GB',
             ]),
@@ -124,7 +156,10 @@ class SailAutotranslatePlugin extends Plugin
         $response = curl_exec($ch);
         curl_close($ch);
 
-        $data = json_decode($response, true);
-        return $data['translations'][0]['text'] ?? $text;
+        $data       = json_decode($response, true);
+        $translated = $data['translations'][0]['text'] ?? $protected;
+
+        // Originele URLs terugzetten
+        return $this->restoreUrls($translated, $urls);
     }
 }

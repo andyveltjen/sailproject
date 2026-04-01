@@ -11,7 +11,7 @@ Welcome to the research wiki of the SAIL project. Here you will find all our fin
 
 The wiki is structured in four sections:
 
-1. **[Introduction](/wiki/introduction)** - Research questions and methodology
-2. **[Literature review](/wiki/literature review)** - Analysis of international literature
-3. **[Findings](/wiki/findings)** - Synthesis and interim conclusions
-4. **[Guidelines](/wiki/guidelines)** - Development of the final guide
+1. **[Introduction](/wiki/inleiding)** - Research questions and methodology
+2. **[Literature review](/wiki/literatuuronderzoek)** - Analysis of international literature
+3. **[Findings](/wiki/bevindingen)** - Synthesis and interim conclusions
+4. **[Guidelines](/wiki/richtlijnen)** - Development of the final guide
