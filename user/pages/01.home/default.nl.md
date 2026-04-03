@@ -9,7 +9,7 @@ hero:
 project:
     title: 'Over het project'
     description1: 'Generatieve AI confronteert het hoger onderwijs met fundamentele keuzes: welke competenties willen we nog dat studenten zelfstandig beheersen, en hoe zetten we GenAI in zonder het leerproces te ondermijnen?'
-    description2: 'Het SAIL-project onderzoekt hoe opleidingen studenten kunnen ondersteunen in het ontwikkelen van competenties op het gewenste niveau van zelfstandigheid in een tijdperk van GenAI. Daarbij staat centraal wanneer GenAI een meerwaarde is voor leren — en wanneer bewust niet.'
+    description2: 'Het SAIL-project onderzoekt hoe opleidingen studenten kunnen ondersteunen in het ontwikkelen van competenties op het gewenste niveau van zelfstandigheid in een tijdperk van GenAI. Daarbij staat centraal wanneer GenAI een meerwaarde is voor leren - en wanneer bewust niet.'
     checks:
         -
             text: 'Systematisch literatuuronderzoek als basis voor competentieanalyse'
@@ -32,7 +32,7 @@ project:
             label: 'Focus Vlaamse context'
 wiki_sections:
     title: 'Wiki of Research'
-    subtitle: 'Al ons onderzoek, gestructureerd en doorzoekbaar. Groeit mee naarmate het project vordert.'
+    subtitle: 'Al ons onderzoek, gestructureerd en doorzoekbaar. Groeit mee naarmate het project vordert. Stel vragen aan de SAIL Assistent, gevoed door onze onderzoeksresultaten en huidige expertise.'
     items:
         -
             title: Inleiding
@@ -80,16 +80,19 @@ team:
             role: 'Projectleider & Researcher'
             email: andy.veltjen@ucll.be
             linkedin: 'https://www.linkedin.com/in/andyveltjen'
+            photo: pic_andyveltjen.png
         -
             name: 'Steven Verjans'
             role: Researcher
             email: steven.verjans@ucll.be
             linkedin: 'https://www.linkedin.com/in/sverjans/'
+            photo: pic_stevenverjans.jpeg
         -
             name: 'Tobias Frenssen'
-            role: 'Head of Education & Development at UCLL'
-            email: Tobias.Frenssen@ucll.be
+            role: 'Hoofd van Education & Development at UCLL'
+            email: tobias.frenssen@ucll.be
             linkedin: 'https://www.linkedin.com/in/tobias-frenssen-400527295/'
+            photo: pic_tobiasfrenssen.jpeg
 contact:
     email: info@sailproject.ai
     footer_text: '© 2026 SAIL Project'

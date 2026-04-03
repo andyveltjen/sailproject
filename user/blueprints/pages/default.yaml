@@ -181,6 +181,10 @@ form:
                   type: text
                   label: LinkedIn URL
                   placeholder: 'https://www.linkedin.com/in/...'
+                .photo:
+                  type: text
+                  label: Foto bestandsnaam (bv. pic_andyveltjen.png)
+                  placeholder: pic_naam.jpg
 
         # ── Tab 6: Contact & Footer ──
         tab_contact:

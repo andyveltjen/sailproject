@@ -18,10 +18,22 @@
            class="fixed md:static z-40 flex flex-col w-64 h-full bg-white border-r border-slate-100 overflow-y-auto flex-shrink-0">
 
         {# Logo en terug-link altijd tonen #}
+        {% set current_lang = grav.language.getActive %}
+        {% set root_url = grav.uri.rootUrl(true) %}
+        {% set raw = page.rawRoute %}
         <div class="px-5 py-4 border-b border-slate-100">
-            <a href="{{ base_url_absolute }}" class="flex items-center">
-                <img src="{{ url('theme://images/logo.png') }}" alt="{{ site.title }}" class="h-8 w-auto">
-            </a>
+            <div class="flex items-center justify-between">
+                <a href="{{ base_url_absolute }}" class="flex items-center">
+                    <img src="{{ url('theme://images/logo.png') }}" alt="{{ site.title }}" class="h-8 w-auto">
+                </a>
+                <div class="flex items-center gap-1.5 text-xs text-slate-400">
+                    <a href="{{ root_url }}{{ raw }}"
+                       class="transition-colors {% if current_lang == 'nl' or not current_lang %}text-slate-700 font-semibold{% else %}hover:text-slate-600{% endif %}">NL</a>
+                    <span class="text-slate-300">·</span>
+                    <a href="{{ root_url }}/en{{ raw }}"
+                       class="transition-colors {% if current_lang == 'en' %}text-slate-700 font-semibold{% else %}hover:text-slate-600{% endif %}">EN</a>
+                </div>
+            </div>
             <div class="text-sail-500 text-xs font-medium mt-1.5 pl-0.5">{{ 'SAIL.WIKI_SUBTITLE'|t }}</div>
         </div>
         <div class="px-4 pt-3 pb-1">
@@ -60,6 +72,27 @@
         {# Content #}
         <main class="flex-1 max-w-4xl mx-auto w-full px-8 py-10">
             {% if wiki_active %}
+                {# ── Breadcrumbs ── #}
+                {% set crumbs = [] %}
+                {% set _p = page %}
+                {% for i in 1..6 %}
+                    {% set _p = _p.parent %}
+                    {% if _p and _p.routable and _p.rawRoute is not empty and _p.rawRoute != '/' %}
+                        {% set crumbs = [{title: _p.title, url: _p.url}]|merge(crumbs) %}
+                    {% else %}
+                        {% set _p = null %}
+                    {% endif %}
+                {% endfor %}
+                {% if crumbs|length > 0 %}
+                <nav class="flex items-center flex-wrap gap-1 text-xs text-slate-400 mb-6">
+                    {% for crumb in crumbs %}
+                        <a href="{{ crumb.url }}" class="hover:text-sail-600 transition-colors">{{ crumb.title }}</a>
+                        <span class="text-slate-300 select-none">/</span>
+                    {% endfor %}
+                    <span class="text-slate-700 font-medium">{{ page.title }}</span>
+                </nav>
+                {% endif %}
+
                 <article class="prose">
                     <h1 class="!mt-0">{{ page.title }}</h1>
                     {{ page.content|raw }}

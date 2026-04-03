@@ -1,6 +1,7 @@
 {% extends 'partials/base.html.twig' %}
 
 {% set h = page.header %}
+{% set current_lang = grav.language.getActive %}
 
 {% block body %}
 
@@ -10,15 +11,14 @@
         <a href="{{ base_url_absolute }}" class="flex items-center">
             <img src="{{ url('theme://images/logo.png') }}" alt="{{ site.title }}" class="h-9 w-auto">
         </a>
-        <nav class="hidden md:flex items-center gap-6 text-sm text-slate-600">
-            <a href="{{ page.url }}" class="hover:text-sail-600 font-medium text-slate-900">{{ 'SAIL.NAV_PROJECT'|t }}</a>
-            <a href="{{ base_url_absolute }}/wiki" class="hover:text-sail-600">{{ 'SAIL.NAV_WIKI'|t }}</a>
-            <a href="#tijdlijn" class="hover:text-sail-600">{{ 'SAIL.NAV_TIMELINE'|t }}</a>
-            <a href="#team" class="hover:text-sail-600">{{ 'SAIL.NAV_TEAM'|t }}</a>
+        <nav id="main-nav" class="hidden md:flex items-center gap-6 text-sm text-slate-600">
+            <a href="#project" data-section="project" class="nav-anchor transition-colors hover:text-sail-600">{{ 'SAIL.NAV_PROJECT'|t }}</a>
+            <a href="#wiki" data-section="wiki" class="nav-anchor transition-colors hover:text-sail-600">{{ 'SAIL.NAV_WIKI'|t }}</a>
+            <a href="#tijdlijn" data-section="tijdlijn" class="nav-anchor transition-colors hover:text-sail-600">{{ 'SAIL.NAV_TIMELINE'|t }}</a>
+            <a href="#team" data-section="team" class="nav-anchor transition-colors hover:text-sail-600">{{ 'SAIL.NAV_TEAM'|t }}</a>
         </nav>
         <div class="hidden md:flex items-center gap-4">
             {# Taalwisselaar — root_url is altijd zonder taalprefix #}
-            {% set current_lang = grav.language.getActive %}
             {% set root_url = grav.uri.rootUrl(true) %}
             {% set raw = page.rawRoute %}
             <div class="flex items-center gap-1.5 text-xs text-slate-400">
@@ -39,10 +39,15 @@
 <section class="pt-32 pb-20 px-6 bg-gradient-to-br from-slate-50 via-sail-50 to-white">
     <div class="max-w-6xl mx-auto">
         <div class="max-w-3xl">
-            <span class="inline-flex items-center gap-2 bg-sail-100 text-sail-700 text-xs font-medium px-3 py-1 rounded-full mb-6">
-                <span class="w-1.5 h-1.5 rounded-full bg-sail-500"></span>
-                Onderzoeksproject 2025–2028
-            </span>
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="inline-flex items-center gap-2 bg-sail-100 text-sail-700 text-xs font-medium px-3 py-1 rounded-full">
+                    <span class="w-1.5 h-1.5 rounded-full bg-sail-500"></span>
+                    {{ 'SAIL.BADGE_RESEARCH'|t }}
+                </span>
+                <span class="inline-flex items-center bg-slate-100 text-slate-600 text-xs font-medium px-3 py-1 rounded-full">
+                    AI &amp; Onderwijs
+                </span>
+            </div>
             <h1 class="text-5xl font-bold text-slate-900 leading-tight mb-4">
                 {{ page.title }}
             </h1>
@@ -57,7 +62,10 @@
                 <a href="https://research-expertise.ucll.be/en/expertcenters/education-development"
                    target="_blank" rel="noopener noreferrer"
                    class="text-sail-500 hover:text-sail-600 underline underline-offset-2 transition-colors">Education &amp; Development</a>
-                {{ 'SAIL.INITIATIVE_OF'|t }}
+                {{ 'SAIL.INITIATIVE_OF_PRE'|t }}
+                <a href="{{ current_lang == 'en' ? 'https://www.ucll.be/en' : 'https://www.ucll.be/' }}"
+                   target="_blank" rel="noopener noreferrer"
+                   class="text-sail-500 hover:text-sail-600 underline underline-offset-2 transition-colors">{{ 'SAIL.INITIATIVE_OF_LINK'|t }}</a>
             </p>
             <div class="flex flex-wrap gap-4">
                 {% if h.hero.cta_text %}
@@ -116,7 +124,7 @@
 
 {# ── Wiki kaarten ── #}
 {% if h.wiki_sections %}
-<section class="py-20 px-6 bg-slate-50">
+<section id="wiki" class="py-20 px-6 bg-slate-50">
     <div class="max-w-6xl mx-auto">
         <div class="mb-12">
             <h2 class="text-3xl font-bold text-slate-900 mb-3">{{ h.wiki_sections.title ?: 'Wiki of Research' }}</h2>
@@ -124,12 +132,16 @@
         </div>
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {% for section in h.wiki_sections.items %}
-            <a href="{{ base_url_absolute }}{{ section.url }}" class="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-sail-300 hover:shadow-lg transition-all">
+            <a href="{{ base_url_absolute }}{{ section.url }}" class="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-sail-300 hover:shadow-lg transition-all flex flex-col">
                 <div class="w-10 h-10 rounded-xl bg-sail-100 flex items-center justify-center mb-4 group-hover:bg-sail-500 transition-colors">
                     <i class="fa {{ section.icon }} text-sail-600 group-hover:text-white transition-colors"></i>
                 </div>
                 <h3 class="font-semibold text-slate-900 mb-2">{{ section.title }}</h3>
-                <p class="text-sm text-slate-500">{{ section.description }}</p>
+                <p class="text-sm text-slate-500 mb-4">{{ section.description }}</p>
+                <div class="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <span class="text-xs text-sail-500 font-medium">{{ current_lang == 'en' ? 'View Wiki' : 'Bekijk Wiki' }}</span>
+                    <i class="fa fa-arrow-right text-xs text-sail-400 group-hover:translate-x-1 transition-transform"></i>
+                </div>
             </a>
             {% endfor %}
         </div>
@@ -226,9 +238,15 @@
         <div class="grid md:grid-cols-3 gap-6">
             {% for member in h.team.items %}
             <div class="bg-white rounded-2xl p-6 border border-slate-200 flex flex-col">
-                <div class="w-12 h-12 rounded-full bg-sail-100 flex items-center justify-center mb-4">
-                    <i class="fa fa-user text-sail-500"></i>
+                {% if member.photo %}
+                <div class="w-14 h-14 rounded-full overflow-hidden mb-4 flex-shrink-0">
+                    <img src="{{ url('theme://images/' ~ member.photo) }}" alt="{{ member.name }}" class="w-full h-full object-cover">
                 </div>
+                {% else %}
+                <div class="w-14 h-14 rounded-full bg-sail-100 flex items-center justify-center mb-4 flex-shrink-0">
+                    <i class="fa fa-user text-sail-500 text-xl"></i>
+                </div>
+                {% endif %}
                 <div class="font-semibold text-slate-900">{{ member.name }}</div>
                 <div class="text-sm text-slate-400 mt-1">{{ member.role }}</div>
                 {% if member.email or member.linkedin %}
@@ -275,5 +293,28 @@
         <div class="text-xs">{{ h.contact.footer_text ?: '© 2025 SAIL Project' }}</div>
     </div>
 </footer>
+
+<script>
+(function () {
+    const anchors = document.querySelectorAll('#main-nav .nav-anchor');
+    const sections = ['project', 'wiki', 'tijdlijn', 'team'].map(id => document.getElementById(id)).filter(Boolean);
+
+    function setActive(id) {
+        anchors.forEach(a => {
+            const isActive = a.dataset.section === id;
+            a.classList.toggle('font-medium', isActive);
+            a.classList.toggle('text-slate-900', isActive);
+        });
+    }
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) setActive(entry.target.id);
+        });
+    }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+
+    sections.forEach(s => observer.observe(s));
+})();
+</script>
 
 {% endblock %}

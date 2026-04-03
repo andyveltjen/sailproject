@@ -1,12 +1,12 @@
 SAIL:
-  NAV_PROJECT: Project
+  NAV_PROJECT: Over SAIL
   NAV_WIKI: Wiki of Research
   NAV_TIMELINE: Tijdlijn
   NAV_TEAM: Team
-  BTN_READ_WIKI: Lees de Wiki
+  BTN_READ_WIKI: Wiki of Research
   BTN_MORE_PROJECT: Meer over het project
-  BACK_TO_PROJECT: Terug naar project
-  BACK_TO_PROJECT_BTN: Terug naar het project
+  BACK_TO_PROJECT: Terug naar projectpagina
+  BACK_TO_PROJECT_BTN: Terug naar projectpagina
   WIKI_SUBTITLE: Wiki of Research
   WIKI_CONTENT: Inhoud
   WIKI_INACTIVE_SHORT: Wiki is momenteel niet beschikbaar.
@@ -17,4 +17,5 @@ SAIL:
   FOOTER_QUESTIONS: Vragen?
   BADGE_RESEARCH: Onderzoeksproject 2025–2028
   INITIATIVE: 'Een initiatief van het expertisecentrum'
-  INITIATIVE_OF: van Hogeschool UCLL
+  INITIATIVE_OF_PRE: van
+  INITIATIVE_OF_LINK: Hogeschool UCLL

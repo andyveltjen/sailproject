@@ -33,6 +33,8 @@ class SailAutotranslatePlugin extends Plugin
 
         $nl_file = $obj->filePath();
 
+        $this->grav['log']->info('[sail-autotranslate] onAdminAfterSave fired for: ' . $nl_file);
+
         // Enkel .nl.md bestanden vertalen
         if (!str_ends_with($nl_file, '.nl.md')) {
             return;

@@ -1,3 +1,7 @@
+# Deploy (bevat server-gegevens — nooit committen)
+deploy.sh
+.env.deploy
+
 # Grav core (niet deployen — staat al op server via installatie)
 /system/
 /vendor/

@@ -32,7 +32,7 @@ project:
       label: 'Focus Flemish context'
 wiki_sections:
   title: 'Wiki of Research'
-  subtitle: 'All our research, structured and searchable. Grows with you as the project progresses.'
+  subtitle: 'All our research, structured and searchable. Grows as the project progresses. Ask questions to the SAIL Assistant, fed by our research results and current expertise.'
   items:
     -
       title: Introduction
