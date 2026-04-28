@@ -231,6 +231,8 @@ flex:
     render:
       enabled: true
       lifetime: 600
+scheduler:
+  enabled: true
 strict_mode:
   yaml_compat: false
   twig_compat: false

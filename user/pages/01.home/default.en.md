@@ -6,6 +6,14 @@ hero:
   cta_text: 'View the Wiki of Research'
   cta_url: /wiki
   second_cta_text: 'More on the project'
+  badge_research: 'Research Project 2025–2028'
+  badge_topic: 'AI & Education'
+  initiative: 'An initiative of the Expertise Centre'
+  initiative_link_text: 'Education & Development'
+  initiative_link_url: 'https://research-expertise.ucll.be/en/expertcenters/education-development'
+  initiative_of: 'at'
+  initiative_org: 'University of Applied Sciences UCLL'
+  initiative_org_url: 'https://www.ucll.be/en'
 project:
   title: 'About the project'
   description1: 'Generative AI confronts higher education with fundamental choices: which competences do we still want students to master independently, and how do we deploy GenAI without undermining the learning process?'

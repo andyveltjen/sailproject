@@ -95,7 +95,11 @@
 
                 <article class="prose">
                     <h1 class="!mt-0">{{ page.title }}</h1>
-                    {{ page.content|raw }}
+                    {% set content = page.content %}
+                    {% if current_lang == 'en' %}
+                        {% set content = content|replace({'href="/wiki': 'href="/en/wiki'}) %}
+                    {% endif %}
+                    {{ content|raw }}
                 </article>
 
                 {# Prev / Next navigatie #}

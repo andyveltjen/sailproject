@@ -9,7 +9,7 @@ This section compiles the analysis of international academic literature on AI in
 
 ## Overview
 
-- **[AI definitions and concepts](/wiki/literature-research/ai-definitions)** - What do we mean by AI in educational context?
-- **[Impact on learning](/wiki/literature-research/impact-education)** - What does science say about AI and learning?
+- **[AI definitions and concepts](/wiki/literatuuronderzoek/ai-definities)** - What do we mean by AI in educational context?
+- **[Impact on learning](/wiki/literatuuronderzoek/impact-onderwijs)** - What does science say about AI and learning?
 
 *More clusters will be added as research progresses.*

@@ -6,6 +6,14 @@ hero:
     cta_text: 'Bekijk de Wiki of Research'
     cta_url: /wiki
     second_cta_text: 'Meer over het project'
+    badge_research: 'Onderzoeksproject 2025–2028'
+    badge_topic: 'AI & Onderwijs'
+    initiative: 'Een initiatief van het expertisecentrum'
+    initiative_link_text: 'Education & Development'
+    initiative_link_url: 'https://research-expertise.ucll.be/en/expertcenters/education-development'
+    initiative_of: 'van'
+    initiative_org: 'Hogeschool UCLL'
+    initiative_org_url: 'https://www.ucll.be/'
 project:
     title: 'Over het project'
     description1: 'Generatieve AI confronteert het hoger onderwijs met fundamentele keuzes: welke competenties willen we nog dat studenten zelfstandig beheersen, en hoe zetten we GenAI in zonder het leerproces te ondermijnen?'

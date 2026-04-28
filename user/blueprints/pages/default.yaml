@@ -14,6 +14,16 @@ form:
           title: Hero
 
           fields:
+            header.hero.badge_research:
+              type: text
+              label: 'Pill 1 — Projectbadge'
+              placeholder: 'Onderzoeksproject 2025–2028'
+
+            header.hero.badge_topic:
+              type: text
+              label: 'Pill 2 — Thema'
+              placeholder: 'AI & Onderwijs'
+
             header.hero.subtitle:
               type: text
               label: Subtitel (onder de hoofdtitel)
@@ -38,6 +48,36 @@ form:
               type: text
               label: Knoptekst (secundaire knop)
               placeholder: Meer over het project
+
+            header.hero.initiative:
+              type: text
+              label: 'Initiatiefzin — prefix'
+              placeholder: 'Een initiatief van het expertisecentrum'
+
+            header.hero.initiative_link_text:
+              type: text
+              label: 'Initiatiefzin — linktekst expertisecentrum'
+              placeholder: 'Education & Development'
+
+            header.hero.initiative_link_url:
+              type: text
+              label: 'Initiatiefzin — URL expertisecentrum'
+              placeholder: 'https://research-expertise.ucll.be/...'
+
+            header.hero.initiative_of:
+              type: text
+              label: 'Initiatiefzin — verbindingswoord (van / at)'
+              placeholder: van
+
+            header.hero.initiative_org:
+              type: text
+              label: 'Initiatiefzin — naam instelling'
+              placeholder: 'Hogeschool UCLL'
+
+            header.hero.initiative_org_url:
+              type: text
+              label: 'Initiatiefzin — URL instelling'
+              placeholder: 'https://www.ucll.be/'
 
         # ── Tab 2: Project ──
         tab_project:

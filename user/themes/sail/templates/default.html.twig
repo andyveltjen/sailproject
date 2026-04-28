@@ -40,13 +40,17 @@
     <div class="max-w-6xl mx-auto">
         <div class="max-w-3xl">
             <div class="flex flex-wrap gap-2 mb-6">
+                {% if h.hero.badge_research %}
                 <span class="inline-flex items-center gap-2 bg-sail-100 text-sail-700 text-xs font-medium px-3 py-1 rounded-full">
                     <span class="w-1.5 h-1.5 rounded-full bg-sail-500"></span>
-                    {{ 'SAIL.BADGE_RESEARCH'|t }}
+                    {{ h.hero.badge_research }}
                 </span>
+                {% endif %}
+                {% if h.hero.badge_topic %}
                 <span class="inline-flex items-center bg-slate-100 text-slate-600 text-xs font-medium px-3 py-1 rounded-full">
-                    AI &amp; Onderwijs
+                    {{ h.hero.badge_topic }}
                 </span>
+                {% endif %}
             </div>
             <h1 class="text-5xl font-bold text-slate-900 leading-tight mb-4">
                 {{ page.title }}
@@ -57,16 +61,22 @@
             {% if h.hero.intro %}
             <p class="text-xl text-slate-500 leading-relaxed mb-10 max-w-2xl">{{ h.hero.intro }}</p>
             {% endif %}
+            {% if h.hero.initiative %}
             <p class="text-sm text-slate-400 mb-8">
-                {{ 'SAIL.INITIATIVE'|t }}
-                <a href="https://research-expertise.ucll.be/en/expertcenters/education-development"
+                {{ h.hero.initiative }}
+                {% if h.hero.initiative_link_text %}
+                <a href="{{ h.hero.initiative_link_url ?: 'https://research-expertise.ucll.be/en/expertcenters/education-development' }}"
                    target="_blank" rel="noopener noreferrer"
-                   class="text-sail-500 hover:text-sail-600 underline underline-offset-2 transition-colors">Education &amp; Development</a>
-                {{ 'SAIL.INITIATIVE_OF_PRE'|t }}
-                <a href="{{ current_lang == 'en' ? 'https://www.ucll.be/en' : 'https://www.ucll.be/' }}"
+                   class="text-sail-500 hover:text-sail-600 underline underline-offset-2 transition-colors">{{ h.hero.initiative_link_text }}</a>
+                {% endif %}
+                {% if h.hero.initiative_of %}{{ h.hero.initiative_of }}{% endif %}
+                {% if h.hero.initiative_org %}
+                <a href="{{ h.hero.initiative_org_url ?: 'https://www.ucll.be/' }}"
                    target="_blank" rel="noopener noreferrer"
-                   class="text-sail-500 hover:text-sail-600 underline underline-offset-2 transition-colors">{{ 'SAIL.INITIATIVE_OF_LINK'|t }}</a>
+                   class="text-sail-500 hover:text-sail-600 underline underline-offset-2 transition-colors">{{ h.hero.initiative_org }}</a>
+                {% endif %}
             </p>
+            {% endif %}
             <div class="flex flex-wrap gap-4">
                 {% if h.hero.cta_text %}
                 <a href="{{ base_url_absolute }}/wiki" class="inline-flex items-center gap-2 bg-sail-500 hover:bg-sail-600 text-white font-medium px-6 py-3 rounded-xl transition-colors shadow-lg shadow-sail-200">
