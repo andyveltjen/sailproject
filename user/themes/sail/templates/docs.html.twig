@@ -15,7 +15,7 @@
 
     {# ── Sidebar ── #}
     <aside id="wiki-sidebar"
-           class="fixed md:static z-40 flex flex-col w-64 h-full bg-white border-r border-slate-100 overflow-y-auto flex-shrink-0">
+           class="fixed md:static z-40 flex flex-col w-72 h-full bg-white border-r border-slate-100 overflow-y-auto flex-shrink-0">
 
         {# Logo en terug-link altijd tonen #}
         {% set current_lang = grav.language.getActive %}
@@ -70,7 +70,7 @@
         </div>
 
         {# Content #}
-        <main class="flex-1 max-w-4xl mx-auto w-full px-8 py-10">
+        <main class="flex-1 max-w-5xl mx-auto w-full px-16 py-10">
             {% if wiki_active %}
                 {# ── Breadcrumbs ── #}
                 {% set crumbs = [] %}
@@ -93,7 +93,7 @@
                 </nav>
                 {% endif %}
 
-                <article class="prose">
+                <article class="prose max-w-none">
                     <h1 class="!mt-0">{{ page.title }}</h1>
                     {% set content = page.content %}
                     {% if current_lang == 'en' %}
@@ -240,7 +240,7 @@ function closeSidebar() {
 function sailNavToggle(el) {
     const li   = el.closest('li');
     const ul   = li.querySelector('[data-nav-children]');
-    const icon = li.querySelector('.fa-chevron-right');
+    const icon = li.querySelector('.fa');
     const wrap = el.classList.contains('group') ? el : li.querySelector('.group');
 
     if (!ul) return;
@@ -249,9 +249,10 @@ function sailNavToggle(el) {
     ul.classList.toggle('hidden');
 
     if (icon) {
-        icon.classList.toggle('rotate-90', opening);
-        icon.classList.toggle('text-sail-500', opening);
-        icon.classList.toggle('text-slate-400', !opening);
+        icon.classList.toggle('fa-square',   opening);
+        icon.classList.toggle('fa-square-o', !opening);
+        icon.classList.toggle('text-sail-500',  opening);
+        icon.classList.toggle('text-slate-300', !opening);
     }
     if (wrap) wrap.classList.toggle('bg-slate-50', opening);
 }
