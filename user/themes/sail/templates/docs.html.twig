@@ -237,14 +237,23 @@ function closeSidebar() {
     document.getElementById('wiki-sidebar').classList.remove('open');
     document.getElementById('sidebar-overlay').classList.add('hidden');
 }
-function sailNavToggle(btn) {
-    const li   = btn.closest('li');
+function sailNavToggle(el) {
+    const li   = el.closest('li');
     const ul   = li.querySelector('[data-nav-children]');
-    const icon = btn.querySelector('i');
-    if (ul) {
-        ul.classList.toggle('hidden');
-        icon.classList.toggle('rotate-90');
+    const icon = li.querySelector('.fa-chevron-right');
+    const wrap = el.classList.contains('group') ? el : li.querySelector('.group');
+
+    if (!ul) return;
+
+    const opening = ul.classList.contains('hidden');
+    ul.classList.toggle('hidden');
+
+    if (icon) {
+        icon.classList.toggle('rotate-90', opening);
+        icon.classList.toggle('text-sail-500', opening);
+        icon.classList.toggle('text-slate-400', !opening);
     }
+    if (wrap) wrap.classList.toggle('bg-slate-50', opening);
 }
 
 // ── Zoekresultaten renderen ───────────────────────────────────────────────────
