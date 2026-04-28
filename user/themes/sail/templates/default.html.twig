@@ -297,7 +297,7 @@
         </div>
         {% if h.contact.email %}
         <div class="text-sm">
-            Vragen? <a href="mailto:{{ h.contact.email }}" class="text-sail-400 hover:text-sail-300">{{ h.contact.email }}</a>
+            {{ 'SAIL.FOOTER_QUESTIONS'|t }} <a href="mailto:{{ h.contact.email }}" class="text-sail-400 hover:text-sail-300">{{ h.contact.email }}</a>
         </div>
         {% endif %}
         <div class="text-xs">{{ h.contact.footer_text ?: '© 2025 SAIL Project' }}</div>
