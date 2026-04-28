@@ -16,8 +16,13 @@ if (!isset($_GET['token']) || !hash_equals(CRON_TOKEN, $_GET['token'])) {
 $php = '/data/jail/usr/local/php-8.4/bin/php';
 $grav = __DIR__ . '/bin/grav';
 
-// Grav scheduler uitvoeren
-$cmd    = escapeshellarg($php) . ' ' . escapeshellarg($grav) . ' scheduler 2>&1';
+// Backup direct triggeren of scheduler uitvoeren
+if (isset($_GET['backup']) && $_GET['backup'] === '1') {
+    $cmd = escapeshellarg($php) . ' ' . escapeshellarg($grav) . ' backup 2>&1';
+} else {
+    $force = isset($_GET['force']) && $_GET['force'] === '1' ? ' --force' : '';
+    $cmd   = escapeshellarg($php) . ' ' . escapeshellarg($grav) . ' scheduler' . $force . ' 2>&1';
+}
 $output = [];
 $code   = 0;
 exec($cmd, $output, $code);
