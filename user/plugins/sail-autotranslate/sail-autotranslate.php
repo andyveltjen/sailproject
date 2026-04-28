@@ -115,8 +115,6 @@ class SailAutotranslatePlugin extends Plugin
             new \RecursiveDirectoryIterator($pages_dir, \FilesystemIterator::SKIP_DOTS)
         );
 
-        $plugin = new self($grav, []);
-
         foreach ($iterator as $file) {
             if (!str_ends_with($file->getFilename(), '.nl.md')) continue;
 
@@ -129,9 +127,94 @@ class SailAutotranslatePlugin extends Plugin
 
             if ($needs_translation) {
                 $grav['log']->info('[sail-autotranslate] Scheduler vertaalt: ' . $nl_path);
-                $plugin->translatePage($nl_path, $api_key, $api_url);
+                self::translatePageStatic($nl_path, $api_key, $api_url, $grav);
             }
         }
+    }
+
+    /** Statische versie van translatePage voor gebruik in scheduler (geen $this beschikbaar) */
+    private static function translatePageStatic(string $nl_file, string $api_key, string $api_url, $grav): void
+    {
+        $en_file = preg_replace('/\.nl\.md$/', '.en.md', $nl_file);
+        $content = file_get_contents($nl_file);
+
+        if (preg_match('/^---\n(.*?)\n---\n?(.*)/s', $content, $m)) {
+            $raw_yaml = $m[1];
+            $body     = $m[2];
+        } else {
+            $raw_yaml = '';
+            $body     = $content;
+        }
+
+        $frontmatter = Yaml::parse($raw_yaml) ?: [];
+        if (!empty($frontmatter)) {
+            $frontmatter = self::translateFrontmatterStatic($frontmatter, $api_key, $api_url);
+        }
+
+        $translated_body = '';
+        if (trim($body) !== '') {
+            $translated_body = self::deepLTranslateStatic($body, $api_key, $api_url);
+        }
+
+        $yaml_out = Yaml::dump($frontmatter, 4, 2);
+        $output   = "---\n{$yaml_out}---\n{$translated_body}";
+        file_put_contents($en_file, $output);
+        touch($en_file, filemtime($nl_file));
+
+        $grav['log']->info('[sail-autotranslate] Scheduler schreef: ' . $en_file);
+    }
+
+    private static function translateFrontmatterStatic(array $data, string $api_key, string $api_url): array
+    {
+        $translate_fields = [
+            'title', 'subtitle', 'intro', 'description', 'description1', 'description2',
+            'inactive_message', 'label', 'text', 'status', 'footer_text',
+            'cta_text', 'second_cta_text', 'name', 'role', 'period',
+        ];
+        foreach ($data as $key => &$value) {
+            if (is_array($value)) {
+                $value = self::translateFrontmatterStatic($value, $api_key, $api_url);
+            } elseif (is_string($value) && in_array($key, $translate_fields) && strlen($value) > 1) {
+                $value = self::deepLTranslateStatic($value, $api_key, $api_url);
+            }
+        }
+        return $data;
+    }
+
+    private static function deepLTranslateStatic(string $text, string $api_key, string $api_url): string
+    {
+        if (trim($text) === '') return $text;
+
+        // URLs beschermen
+        $urls = []; $counter = 0;
+        $protected = preg_replace_callback(
+            '/(!?\[[^\]]*\])\(([^)]+)\)/',
+            function ($m) use (&$urls, &$counter) {
+                $ph = 'SAILURL' . $counter++; $urls[$ph] = $m[2];
+                return $m[1] . '(' . $ph . ')';
+            },
+            $text
+        );
+
+        $ch = curl_init($api_url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_HTTPHEADER     => ["Authorization: DeepL-Auth-Key $api_key"],
+            CURLOPT_POSTFIELDS     => http_build_query([
+                'text' => $protected, 'source_lang' => 'NL', 'target_lang' => 'EN-GB',
+            ]),
+        ]);
+        $response   = curl_exec($ch);
+        curl_close($ch);
+        $data       = json_decode($response, true);
+        $translated = $data['translations'][0]['text'] ?? $protected;
+
+        foreach ($urls as $ph => $url) {
+            $translated = str_replace($ph, $url, $translated);
+            $translated = str_replace(strtolower($ph), $url, $translated);
+        }
+        return $translated;
     }
 
     // ── Vertaal één pagina ──────────────────────────────────────────────────────
