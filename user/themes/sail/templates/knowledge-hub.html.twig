@@ -13,12 +13,18 @@
             <a href="{{ base_url_absolute }}" class="flex items-center">
                 <img src="{{ url('theme://images/logo.png') }}" alt="{{ site.title }}" class="h-9 w-auto">
             </a>
+
+            {# Desktop nav #}
             <nav class="hidden md:flex items-center gap-6 text-sm text-slate-600">
-                <a href="{{ base_url_absolute }}" class="hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_PROJECT'|t }}</a>
-                <a href="{{ base_url_absolute }}/wiki" class="hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_WIKI'|t }}</a>
+                <a href="{{ base_url_absolute }}#project"  class="hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_PROJECT'|t }}</a>
+                <a href="{{ base_url_absolute }}/wiki"     class="hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_WIKI'|t }}</a>
                 <a href="{{ base_url_absolute }}/knowledge-hub"
                    class="text-sail-600 font-semibold border-b-2 border-sail-500 pb-0.5">Knowledge Hub</a>
+                <a href="{{ base_url_absolute }}#tijdlijn" class="hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_TIMELINE'|t }}</a>
+                <a href="{{ base_url_absolute }}#team"     class="hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_TEAM'|t }}</a>
             </nav>
+
+            {# Desktop rechts: taalwisselaar + Wiki-knop #}
             <div class="hidden md:flex items-center gap-4">
                 <div class="flex items-center gap-1.5 text-xs text-slate-400">
                     <a href="{{ root_url }}{{ raw }}"
@@ -31,6 +37,32 @@
                    class="inline-flex items-center gap-2 bg-sail-500 hover:bg-sail-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
                     Wiki <i class="fa fa-arrow-right text-xs"></i>
                 </a>
+            </div>
+
+            {# Mobiel: hamburger #}
+            <button id="kh-menu-btn" onclick="khToggleMenu()"
+                    class="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors">
+                <i class="fa fa-bars text-lg"></i>
+            </button>
+        </div>
+
+        {# Mobiel dropdown-menu #}
+        <div id="kh-mobile-menu"
+             class="md:hidden hidden border-t border-slate-100 bg-white/95 backdrop-blur pb-4">
+            <nav class="flex flex-col px-4 pt-3 gap-1 text-sm text-slate-600">
+                <a href="{{ base_url_absolute }}#project"  class="py-2 px-3 rounded-lg hover:bg-sail-50 hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_PROJECT'|t }}</a>
+                <a href="{{ base_url_absolute }}/wiki"     class="py-2 px-3 rounded-lg hover:bg-sail-50 hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_WIKI'|t }}</a>
+                <a href="{{ base_url_absolute }}/knowledge-hub"
+                   class="py-2 px-3 rounded-lg bg-sail-50 text-sail-600 font-semibold">Knowledge Hub</a>
+                <a href="{{ base_url_absolute }}#tijdlijn" class="py-2 px-3 rounded-lg hover:bg-sail-50 hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_TIMELINE'|t }}</a>
+                <a href="{{ base_url_absolute }}#team"     class="py-2 px-3 rounded-lg hover:bg-sail-50 hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_TEAM'|t }}</a>
+            </nav>
+            <div class="flex items-center gap-3 px-7 pt-3 border-t border-slate-100 mt-2">
+                <a href="{{ root_url }}{{ raw }}"
+                   class="text-xs transition-colors {% if current_lang == 'nl' or not current_lang %}text-slate-700 font-semibold{% else %}text-slate-400 hover:text-slate-600{% endif %}">NL</a>
+                <span class="text-slate-300 text-xs">·</span>
+                <a href="{{ root_url }}/en{{ raw }}"
+                   class="text-xs transition-colors {% if current_lang == 'en' %}text-slate-700 font-semibold{% else %}text-slate-400 hover:text-slate-600{% endif %}">EN</a>
             </div>
         </div>
     </header>
@@ -70,22 +102,23 @@
 
     {# ── Tag-filters ── #}
     {% if raindrop_all_tags|length > 0 %}
-    <div class="sticky top-16 z-40 bg-white/95 backdrop-blur border-b border-slate-100 px-6 py-3 shadow-sm">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
-                <span class="text-xs text-slate-400 font-medium whitespace-nowrap mr-1">
-                    <i class="fa fa-tag"></i> Filter:
-                </span>
+    <div class="sticky top-16 z-40 bg-white/95 backdrop-blur border-b border-slate-100 shadow-sm">
+        {# Label enkel op desktop zichtbaar naast de scrollrij #}
+        <div class="flex items-center">
+            <span class="hidden sm:flex items-center gap-1.5 text-xs text-slate-400 font-medium whitespace-nowrap pl-6 pr-3 flex-shrink-0">
+                <i class="fa fa-tag"></i> Filter:
+            </span>
+            {# Scrollbare knoppenbalk — loopt over volledige breedte op mobile #}
+            <div class="flex items-center gap-2 overflow-x-auto py-3 px-4 sm:px-2 scrollbar-hide" style="-webkit-overflow-scrolling: touch;">
                 <button onclick="filterTag(null)" id="tag-all"
                         class="tag-btn active flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-sail-500 text-white">
-                    Alle bronnen
-                    <span class="opacity-70" id="tag-all-count"></span>
+                    {% if current_lang == 'en' %}All sources{% else %}Alle bronnen{% endif %}
                 </button>
                 {% for tag in raindrop_all_tags %}
                 <button onclick="filterTag('{{ tag|e('js') }}')"
                         id="tag-{{ tag|replace({' ': '-', '/': '-'})|lower }}"
                         data-tag="{{ tag }}"
-                        class="tag-btn flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-slate-100 text-slate-600 hover:bg-sail-100 hover:text-sail-700">
+                        class="tag-btn flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-slate-100 text-slate-600 hover:bg-sail-100 hover:text-sail-700 whitespace-nowrap">
                     {{ tag }}
                 </button>
                 {% endfor %}
@@ -234,6 +267,28 @@
 </style>
 
 <script>
+// ── Mobiel menu ──────────────────────────────────────────────────────────────
+function khToggleMenu() {
+    const menu = document.getElementById('kh-mobile-menu');
+    const btn  = document.getElementById('kh-menu-btn');
+    const open = menu.classList.toggle('hidden');
+    btn.querySelector('i').className = open ? 'fa fa-bars text-lg' : 'fa fa-times text-lg';
+}
+
+// Sluit menu bij klik buiten de header
+document.addEventListener('click', function(e) {
+    const header = document.querySelector('header');
+    if (!header.contains(e.target)) {
+        const menu = document.getElementById('kh-mobile-menu');
+        const btn  = document.getElementById('kh-menu-btn');
+        if (menu && !menu.classList.contains('hidden')) {
+            menu.classList.add('hidden');
+            btn.querySelector('i').className = 'fa fa-bars text-lg';
+        }
+    }
+});
+
+// ── Tag filtering ────────────────────────────────────────────────────────────
 let activeTag = null;
 
 function filterTag(tag) {
