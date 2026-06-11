@@ -3,6 +3,7 @@
 {% set current_lang = grav.language.getActive %}
 {% set root_url = grav.uri.rootUrl(true) %}
 {% set raw = page.rawRoute %}
+{% set tag_translations = page.header.tag_translations ?? {} %}
 
 {% block body %}
 <div class="flex h-screen overflow-hidden bg-white">
@@ -106,7 +107,7 @@
                 <button onclick="filterTag('{{ tag|e('js') }}')"
                         data-tag="{{ tag }}"
                         class="tag-btn inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-slate-100 text-slate-600 hover:bg-sail-100 hover:text-sail-700">
-                    {{ tag }}
+                    {{ tag_translations[tag] ?? tag }}
                 </button>
                 {% endfor %}
             </div>
@@ -208,7 +209,7 @@
                                 {% for tag in item.tags|slice(0, 3) %}
                                 <button onclick="filterTag('{{ tag|e('js') }}')"
                                         class="inline-block text-[10px] bg-sail-50 text-sail-600 hover:bg-sail-100 px-2 py-0.5 rounded-full transition-colors">
-                                    {{ tag }}
+                                    {{ tag_translations[tag] ?? tag }}
                                 </button>
                                 {% endfor %}
                                 {% if item.tags|length > 3 %}
