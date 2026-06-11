@@ -61,24 +61,16 @@
                 <p id="kh-search-count" class="text-xs text-slate-400 mt-1.5 hidden"></p>
             </div>
 
-            {# Datum sorteren #}
+            {# Filter op maand/jaar #}
             <div>
                 <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
                     <i class="fa fa-calendar-o mr-1"></i>
-                    {{ current_lang == 'en' ? 'Sort by date' : 'Sorteren op datum' }}
+                    {{ current_lang == 'en' ? 'Period' : 'Periode' }}
                 </label>
-                <div class="flex rounded-lg border border-slate-200 overflow-hidden text-sm">
-                    <button id="sort-new" onclick="khSort('new')"
-                            class="sort-btn flex-1 py-2 px-3 text-xs font-medium transition-colors bg-sail-500 text-white">
-                        <i class="fa fa-arrow-down mr-1"></i>
-                        {{ current_lang == 'en' ? 'Newest' : 'Nieuwste' }}
-                    </button>
-                    <button id="sort-old" onclick="khSort('old')"
-                            class="sort-btn flex-1 py-2 px-3 text-xs font-medium transition-colors bg-white text-slate-500 hover:bg-slate-50 border-l border-slate-200">
-                        <i class="fa fa-arrow-up mr-1"></i>
-                        {{ current_lang == 'en' ? 'Oldest' : 'Oudste' }}
-                    </button>
-                </div>
+                <select id="kh-date-filter" onchange="khFilterDate(this.value)"
+                        class="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:border-sail-400 focus:ring-1 focus:ring-sail-200 transition-colors text-slate-600">
+                    <option value="">{{ current_lang == 'en' ? 'All periods' : 'Alle periodes' }}</option>
+                </select>
             </div>
 
         </div>
@@ -276,9 +268,9 @@
 </style>
 
 <script>
-let activeTag     = null;
-let activeSearch  = '';
-let activeSort    = 'new';
+let activeTag    = null;
+let activeSearch = '';
+let activeDate   = '';   // "YYYY-MM" formaat
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -296,9 +288,11 @@ function khApplyFilters() {
         const excerpt = card.dataset.excerpt || '';
         const domain  = card.dataset.domain  || '';
 
+        const cardMonth = (card.dataset.date || '').slice(0, 7); // "YYYY-MM"
         const tagOk    = !activeTag    || tags.includes(activeTag);
         const searchOk = !activeSearch || title.includes(activeSearch) || excerpt.includes(activeSearch) || domain.includes(activeSearch);
-        const show     = tagOk && searchOk;
+        const dateOk   = !activeDate   || cardMonth === activeDate;
+        const show     = tagOk && searchOk && dateOk;
 
         card.classList.toggle('hidden-by-filter', !show);
         if (show) visible++;
@@ -364,32 +358,50 @@ function khClearSearch() {
     khApplyFilters();
 }
 
-// ── Sorteren op datum ─────────────────────────────────────────────────────────
+// ── Filter op maand/jaar ──────────────────────────────────────────────────────
 
-function khSort(direction) {
-    activeSort = direction;
+function khFilterDate(value) {
+    activeDate = value;
+    khApplyFilters();
+}
 
-    // Knoppen updaten
-    document.getElementById('sort-new').classList.toggle('bg-sail-500', direction === 'new');
-    document.getElementById('sort-new').classList.toggle('text-white',  direction === 'new');
-    document.getElementById('sort-new').classList.toggle('bg-white',    direction !== 'new');
-    document.getElementById('sort-new').classList.toggle('text-slate-500', direction !== 'new');
-    document.getElementById('sort-old').classList.toggle('bg-sail-500', direction === 'old');
-    document.getElementById('sort-old').classList.toggle('text-white',  direction === 'old');
-    document.getElementById('sort-old').classList.toggle('bg-white',    direction !== 'old');
-    document.getElementById('sort-old').classList.toggle('text-slate-500', direction !== 'old');
+// Vul de dropdown met unieke maand/jaar-combinaties uit de kaartjes
+function khBuildDateDropdown() {
+    const select = document.getElementById('kh-date-filter');
+    if (!select) return;
 
-    // Kaartjes per sectie sorteren
-    document.querySelectorAll('section[data-collection] [data-cards]').forEach(grid => {
-        const cards = Array.from(grid.querySelectorAll('.kh-card'));
-        cards.sort((a, b) => {
-            const da = new Date(a.dataset.date || 0);
-            const db = new Date(b.dataset.date || 0);
-            return direction === 'new' ? db - da : da - db;
-        });
-        cards.forEach(c => grid.appendChild(c));
+    const months = {};
+    khAllCards().forEach(card => {
+        const raw = card.dataset.date || '';
+        if (!raw) return;
+        const d     = new Date(raw);
+        const key   = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        months[key] = { year: d.getFullYear(), month: d.getMonth() };
+    });
+
+    const nlMonths = ['januari','februari','maart','april','mei','juni',
+                      'juli','augustus','september','oktober','november','december'];
+    const enMonths = ['January','February','March','April','May','June',
+                      'July','August','September','October','November','December'];
+    const isEn     = document.documentElement.lang === 'en';
+    const names    = isEn ? enMonths : nlMonths;
+
+    // Nieuwste eerst sorteren
+    const sorted = Object.keys(months).sort((a, b) => b.localeCompare(a));
+
+    sorted.forEach(key => {
+        const { year, month } = months[key];
+        const opt   = document.createElement('option');
+        opt.value   = key;
+        opt.textContent = `${names[month]} ${year}`;
+        select.appendChild(opt);
     });
 }
+
+// ── Mobiel sidebar ────────────────────────────────────────────────────────────
+
+// Dropdown vullen zodra de pagina geladen is
+document.addEventListener('DOMContentLoaded', khBuildDateDropdown);
 
 // ── Mobiel sidebar ────────────────────────────────────────────────────────────
 
