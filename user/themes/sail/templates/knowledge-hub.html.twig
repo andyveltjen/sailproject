@@ -275,7 +275,7 @@
 </style>
 
 <script>
-let activeTag    = null;
+let activeTags   = new Set(); // meerdere labels tegelijk
 let activeSearch = '';
 let activeDate   = '';   // "YYYY-MM" formaat
 
@@ -296,7 +296,7 @@ function khApplyFilters() {
         const domain  = card.dataset.domain  || '';
 
         const cardMonth = (card.dataset.date || '').slice(0, 7); // "YYYY-MM"
-        const tagOk    = !activeTag    || tags.includes(activeTag);
+        const tagOk    = activeTags.size === 0 || tags.some(t => activeTags.has(t));
         const searchOk = !activeSearch || title.includes(activeSearch) || excerpt.includes(activeSearch) || domain.includes(activeSearch);
         const dateOk   = !activeDate   || cardMonth === activeDate;
         const show     = tagOk && searchOk && dateOk;
@@ -332,17 +332,30 @@ function khApplyFilters() {
     }
 }
 
-// ── Tag filter ────────────────────────────────────────────────────────────────
+// ── Tag filter (multi-select) ─────────────────────────────────────────────────
 
 function filterTag(tag) {
-    activeTag = tag;
+    if (!tag) {
+        // "Alle bronnen" → alles deselecteren
+        activeTags.clear();
+    } else {
+        // Toggle: al geselecteerd → verwijder, anders → voeg toe
+        if (activeTags.has(tag)) {
+            activeTags.delete(tag);
+        } else {
+            activeTags.add(tag);
+        }
+    }
 
-    document.querySelectorAll('.tag-btn').forEach(btn => btn.classList.remove('active'));
-    const topBtn = tag ? document.querySelector(`.tag-btn[data-tag="${tag}"]`) : document.getElementById('tag-all');
-    if (topBtn) topBtn.classList.add('active');
+    // Knoppen updaten
+    const allBtn = document.getElementById('tag-all');
+    if (allBtn) allBtn.classList.toggle('active', activeTags.size === 0);
+
+    document.querySelectorAll('.tag-btn[data-tag]').forEach(btn => {
+        btn.classList.toggle('active', activeTags.has(btn.dataset.tag));
+    });
 
     khApplyFilters();
-    khCloseSidebar();
 }
 
 // ── Zoeken ────────────────────────────────────────────────────────────────────
