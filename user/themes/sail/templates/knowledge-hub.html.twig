@@ -40,6 +40,18 @@
         {# Zoeken + sorteren #}
         <div class="px-4 pt-4 pb-6 flex flex-col gap-5">
 
+            {# Filter op maand/jaar #}
+            <div>
+                <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+                    <i class="fa fa-calendar-o mr-1"></i>
+                    {{ current_lang == 'en' ? 'Period' : 'Periode' }}
+                </label>
+                <select id="kh-date-filter" onchange="khFilterDate(this.value)"
+                        class="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:border-sail-400 focus:ring-1 focus:ring-sail-200 transition-colors text-slate-600">
+                    <option value="">{{ current_lang == 'en' ? 'All periods' : 'Alle periodes' }}</option>
+                </select>
+            </div>
+
             {# Zoekvenster #}
             <div>
                 <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
@@ -59,18 +71,6 @@
                     </button>
                 </div>
                 <p id="kh-search-count" class="text-xs text-slate-400 mt-1.5 hidden"></p>
-            </div>
-
-            {# Filter op maand/jaar #}
-            <div>
-                <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
-                    <i class="fa fa-calendar-o mr-1"></i>
-                    {{ current_lang == 'en' ? 'Period' : 'Periode' }}
-                </label>
-                <select id="kh-date-filter" onchange="khFilterDate(this.value)"
-                        class="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:border-sail-400 focus:ring-1 focus:ring-sail-200 transition-colors text-slate-600">
-                    <option value="">{{ current_lang == 'en' ? 'All periods' : 'Alle periodes' }}</option>
-                </select>
             </div>
 
         </div>
