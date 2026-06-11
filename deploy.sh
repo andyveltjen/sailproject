@@ -163,6 +163,9 @@ else
     echo "→ Plugin sail-search..."
     sync_dir "$LOCAL/user/plugins/sail-search" "user/plugins/sail-search"
 
+    echo "→ Plugin sail-knowledgehub..."
+    sync_dir "$LOCAL/user/plugins/sail-knowledgehub" "user/plugins/sail-knowledgehub"
+
     echo "→ Vertalingen..."
     sync_dir "$LOCAL/user/languages" "user/languages"
 

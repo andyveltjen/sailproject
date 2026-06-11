@@ -1,0 +1,5 @@
+enabled: true
+api_token: ''          # Raindrop.io test-token — vul in via admin of .env
+collection_id: ''      # ID van de hoofd-collectie (te vinden in de URL op raindrop.io)
+cache_ttl: 3600        # Cache-tijd in seconden (standaard 1 uur)
+per_page: 50           # Aantal bookmarks per collectie (max 50)

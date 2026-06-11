@@ -1,0 +1,41 @@
+name: SAIL Knowledge Hub
+version: 1.0.0
+description: Raindrop.io integratie voor de SAIL Knowledge Hub pagina
+author:
+  name: SAIL Project
+homepage: https://sailprojectai.be
+license: MIT
+
+form:
+  validation: strict
+  fields:
+    enabled:
+      type: toggle
+      label: Plugin actief
+      highlight: 1
+      default: 0
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    api_token:
+      type: text
+      label: Raindrop.io API-token
+      help: 'Test-token uit raindrop.io/settings/integrations'
+
+    collection_id:
+      type: text
+      label: Hoofd-collectie ID
+      help: 'Te vinden in de URL van de collectie op raindrop.io'
+
+    cache_ttl:
+      type: number
+      label: Cache-tijd (seconden)
+      default: 3600
+
+    per_page:
+      type: number
+      label: Bookmarks per collectie
+      default: 50
