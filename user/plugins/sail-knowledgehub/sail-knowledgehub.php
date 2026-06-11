@@ -43,15 +43,15 @@ class SailKnowledgehubPlugin extends Plugin
     private function fetchKnowledgeHubData(): array
     {
         $token        = $this->getToken();
-        $parentId     = $this->config->get('plugins.sail-knowledgehub.collection_id');
+        $parentId     = $this->config->get('plugins.sail-knowledgehub.collection_id', '');
         $cacheTtl     = (int) $this->config->get('plugins.sail-knowledgehub.cache_ttl', 3600);
         $perPage      = (int) $this->config->get('plugins.sail-knowledgehub.per_page', 50);
 
-        if (empty($token) || empty($parentId)) {
+        if (empty($token)) {
             return [
                 'collections' => [],
                 'all_tags'    => [],
-                'error'       => 'Raindrop API-token of collectie-ID ontbreekt. Configureer de sail-knowledgehub plugin.',
+                'error'       => 'Raindrop API-token ontbreekt. Configureer de sail-knowledgehub plugin.',
             ];
         }
 
@@ -63,7 +63,7 @@ class SailKnowledgehubPlugin extends Plugin
             return $cached;
         }
 
-        // Haal alle collecties op en filter kinderen van de opgegeven parent
+        // Haal alle root-collecties op
         $allCollections = $this->apiGet('https://api.raindrop.io/rest/v1/collections', $token);
 
         if ($allCollections === null) {
@@ -74,24 +74,30 @@ class SailKnowledgehubPlugin extends Plugin
             ];
         }
 
-        $childCollections = [];
+        $targetCollections = [];
+
         if (!empty($allCollections['items'])) {
             foreach ($allCollections['items'] as $col) {
-                $colParentId = $col['parent']['$id'] ?? null;
-                if ((string) $colParentId === (string) $parentId) {
-                    $childCollections[] = $col;
+                $colParentId = ($col['parent'] ?? null) ? ($col['parent']['$id'] ?? null) : null;
+
+                if (!empty($parentId)) {
+                    // Modus A: toon kinderen van een specifieke collectie
+                    if ((string) $colParentId === (string) $parentId) {
+                        $targetCollections[] = $col;
+                    }
+                } else {
+                    // Modus B: geen parent opgegeven → toon alle root-collecties
+                    if ($colParentId === null) {
+                        $targetCollections[] = $col;
+                    }
                 }
             }
         }
 
-        // Als er geen sub-collecties zijn: gebruik de hoofd-collectie zelf
-        if (empty($childCollections)) {
-            $childCollections = [
-                [
-                    '_id'   => $parentId,
-                    'title' => 'Alle bronnen',
-                    'count' => 0,
-                ]
+        // Fallback: als nog steeds leeg, gebruik de opgegeven collectie zelf
+        if (empty($targetCollections) && !empty($parentId)) {
+            $targetCollections = [
+                ['_id' => $parentId, 'title' => 'Bronnen', 'count' => 0]
             ];
         }
 
@@ -99,7 +105,7 @@ class SailKnowledgehubPlugin extends Plugin
         $collections = [];
         $allTags     = [];
 
-        foreach ($childCollections as $col) {
+        foreach ($targetCollections as $col) {
             $colId    = $col['_id'];
             $response = $this->apiGet(
                 "https://api.raindrop.io/rest/v1/raindrops/{$colId}?perpage={$perPage}&sort=-created",
