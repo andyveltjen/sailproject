@@ -50,7 +50,6 @@ class SailKnowledgehubPlugin extends Plugin
         $token        = $this->getToken();
         $parentId     = $this->config->get('plugins.sail-knowledgehub.collection_id', '');
         $cacheTtl     = (int) $this->config->get('plugins.sail-knowledgehub.cache_ttl', 3600);
-        $perPage      = (int) $this->config->get('plugins.sail-knowledgehub.per_page', 50);
 
         if (empty($token)) {
             return [
@@ -61,7 +60,7 @@ class SailKnowledgehubPlugin extends Plugin
         }
 
         $cache   = $this->grav['cache'];
-        $cacheId = md5('sail_raindrop_' . $parentId . '_' . $perPage);
+        $cacheId = md5('sail_raindrop_' . $parentId . '_all');
         $cached  = $cache->fetch($cacheId);
 
         if ($cached !== false) {
@@ -111,31 +110,42 @@ class SailKnowledgehubPlugin extends Plugin
         $allTags     = [];
 
         foreach ($targetCollections as $col) {
-            $colId    = $col['_id'];
-            $response = $this->apiGet(
-                "https://api.raindrop.io/rest/v1/raindrops/{$colId}?perpage={$perPage}&sort=-created",
-                $token
-            );
-
+            $colId = $col['_id'];
             $items = [];
-            if (!empty($response['items'])) {
+            $page  = 0;
+
+            // Pagineer tot alle items zijn opgehaald (Raindrop max 50 per request)
+            do {
+                $response = $this->apiGet(
+                    "https://api.raindrop.io/rest/v1/raindrops/{$colId}?perpage=50&page={$page}&sort=-created",
+                    $token
+                );
+
+                if (empty($response['items'])) {
+                    break;
+                }
+
                 foreach ($response['items'] as $item) {
                     $tags  = $item['tags'] ?? [];
                     $items[] = [
-                        'id'          => $item['_id'],
-                        'title'       => $item['title'] ?? '',
-                        'excerpt'     => $item['excerpt'] ?? '',
-                        'link'        => $item['link'] ?? '#',
-                        'domain'      => $item['domain'] ?? '',
-                        'tags'        => $tags,
-                        'cover'       => $item['cover'] ?? '',
-                        'created'     => $item['created'] ?? '',
+                        'id'      => $item['_id'],
+                        'title'   => $item['title'] ?? '',
+                        'excerpt' => $item['excerpt'] ?? '',
+                        'link'    => $item['link'] ?? '#',
+                        'domain'  => $item['domain'] ?? '',
+                        'tags'    => $tags,
+                        'cover'   => $item['cover'] ?? '',
+                        'created' => $item['created'] ?? '',
                     ];
                     foreach ($tags as $tag) {
                         $allTags[$tag] = ($allTags[$tag] ?? 0) + 1;
                     }
                 }
-            }
+
+                // Stop als er minder dan 50 items in deze pagina zitten (laatste pagina)
+                $fetchedCount = count($response['items']);
+                $page++;
+            } while ($fetchedCount === 50);
 
             $collections[] = [
                 'id'    => $colId,
