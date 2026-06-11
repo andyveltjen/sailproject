@@ -37,33 +37,51 @@
             </a>
         </div>
 
-        {# Tag-navigatie #}
-        {% if raindrop_all_tags|length > 0 %}
-        <nav class="px-3 pb-6 overflow-y-auto flex-1">
-            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2 mt-3">
-                {{ current_lang == 'en' ? 'Filter by label' : 'Filter op label' }}
+        {# Zoeken + sorteren #}
+        <div class="px-4 pt-4 pb-6 flex flex-col gap-5">
+
+            {# Zoekvenster #}
+            <div>
+                <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+                    <i class="fa fa-search mr-1"></i>
+                    {{ current_lang == 'en' ? 'Search' : 'Zoeken' }}
+                </label>
+                <div class="relative">
+                    <input id="kh-search"
+                           type="text"
+                           placeholder="{{ current_lang == 'en' ? 'Search sources…' : 'Zoek bronnen…' }}"
+                           oninput="khSearch(this.value)"
+                           class="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg pl-3 pr-8 py-2 focus:outline-none focus:border-sail-400 focus:ring-1 focus:ring-sail-200 transition-colors placeholder:text-slate-300">
+                    <button onclick="khClearSearch()"
+                            id="kh-search-clear"
+                            class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors hidden">
+                        <i class="fa fa-times text-xs"></i>
+                    </button>
+                </div>
+                <p id="kh-search-count" class="text-xs text-slate-400 mt-1.5 hidden"></p>
             </div>
-            <ul class="space-y-0.5">
-                <li>
-                    <button onclick="filterTag(null)" id="sidebar-tag-all"
-                            class="sidebar-tag-btn w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors bg-sail-50 text-sail-600 font-semibold">
-                        <i class="fa fa-circle text-xs flex-shrink-0"></i>
-                        <span>{{ current_lang == 'en' ? 'All sources' : 'Alle bronnen' }}</span>
+
+            {# Datum sorteren #}
+            <div>
+                <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+                    <i class="fa fa-calendar-o mr-1"></i>
+                    {{ current_lang == 'en' ? 'Sort by date' : 'Sorteren op datum' }}
+                </label>
+                <div class="flex rounded-lg border border-slate-200 overflow-hidden text-sm">
+                    <button id="sort-new" onclick="khSort('new')"
+                            class="sort-btn flex-1 py-2 px-3 text-xs font-medium transition-colors bg-sail-500 text-white">
+                        <i class="fa fa-arrow-down mr-1"></i>
+                        {{ current_lang == 'en' ? 'Newest' : 'Nieuwste' }}
                     </button>
-                </li>
-                {% for tag in raindrop_all_tags %}
-                <li>
-                    <button onclick="filterTag('{{ tag|e('js') }}')"
-                            data-sidebar-tag="{{ tag }}"
-                            class="sidebar-tag-btn w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-500 hover:bg-sail-50 hover:text-sail-600 transition-colors">
-                        <i class="fa fa-circle-o text-xs flex-shrink-0 opacity-40"></i>
-                        <span>{{ tag }}</span>
+                    <button id="sort-old" onclick="khSort('old')"
+                            class="sort-btn flex-1 py-2 px-3 text-xs font-medium transition-colors bg-white text-slate-500 hover:bg-slate-50 border-l border-slate-200">
+                        <i class="fa fa-arrow-up mr-1"></i>
+                        {{ current_lang == 'en' ? 'Oldest' : 'Oudste' }}
                     </button>
-                </li>
-                {% endfor %}
-            </ul>
-        </nav>
-        {% endif %}
+                </div>
+            </div>
+
+        </div>
 
     </aside>
 
@@ -155,7 +173,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" data-cards>
                     {% for item in collection.items %}
                     <article class="kh-card bg-white rounded-xl border border-slate-100 hover:border-sail-200 hover:shadow-md transition-all flex flex-col overflow-hidden group"
-                             data-tags="{{ item.tags|join(',') }}">
+                             data-tags="{{ item.tags|join(',') }}"
+                             data-date="{{ item.created }}"
+                             data-title="{{ item.title|lower }}"
+                             data-excerpt="{{ item.excerpt|lower }}"
+                             data-domain="{{ item.domain|lower }}">
 
                         {% if item.cover and item.cover != '' %}
                         <div class="h-28 overflow-hidden bg-slate-100 flex-shrink-0">
@@ -247,7 +269,6 @@
     .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .tag-btn.active { background-color: #4a7c8c !important; color: white !important; }
     .kh-card.hidden-by-filter { display: none; }
-    .sidebar-tag-btn.active { background-color: #edf5f7; color: #4a7c8c; font-weight: 600; }
     @media (max-width: 768px) {
         #kh-sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
         #kh-sidebar.open { transform: translateX(0); }
@@ -255,52 +276,122 @@
 </style>
 
 <script>
-let activeTag = null;
+let activeTag     = null;
+let activeSearch  = '';
+let activeSort    = 'new';
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function khAllCards() {
+    return Array.from(document.querySelectorAll('.kh-card'));
+}
+
+function khApplyFilters() {
+    const cards = khAllCards();
+    let visible = 0;
+
+    cards.forEach(card => {
+        const tags    = card.dataset.tags   ? card.dataset.tags.split(',').filter(Boolean) : [];
+        const title   = card.dataset.title   || '';
+        const excerpt = card.dataset.excerpt || '';
+        const domain  = card.dataset.domain  || '';
+
+        const tagOk    = !activeTag    || tags.includes(activeTag);
+        const searchOk = !activeSearch || title.includes(activeSearch) || excerpt.includes(activeSearch) || domain.includes(activeSearch);
+        const show     = tagOk && searchOk;
+
+        card.classList.toggle('hidden-by-filter', !show);
+        if (show) visible++;
+    });
+
+    // Secties tonen/verbergen + lege meldingen
+    document.querySelectorAll('section[data-collection]').forEach(section => {
+        const sectionVisible = section.querySelectorAll('.kh-card:not(.hidden-by-filter)').length;
+        const noResults = section.querySelector('.kh-no-results');
+        if (noResults) noResults.classList.toggle('hidden', sectionVisible > 0);
+        section.style.display = (sectionVisible === 0 && (activeTag || activeSearch)) ? 'none' : '';
+    });
+
+    // Zoekresultaat teller
+    const counter = document.getElementById('kh-search-count');
+    if (counter) {
+        if (activeSearch) {
+            counter.textContent = visible === 1 ? '1 resultaat' : `${visible} resultaten`;
+            counter.classList.remove('hidden');
+        } else {
+            counter.classList.add('hidden');
+        }
+    }
+
+    // Globale lege staat
+    const emptyState = document.getElementById('kh-empty-state');
+    if (emptyState) {
+        emptyState.classList.toggle('hidden', visible > 0);
+        emptyState.classList.toggle('flex',   visible === 0);
+    }
+}
+
+// ── Tag filter ────────────────────────────────────────────────────────────────
 
 function filterTag(tag) {
     activeTag = tag;
 
-    // Filterbar knoppen
-    document.querySelectorAll('.tag-btn').forEach(btn => {
-        btn.classList.remove('active');
-        btn.style.backgroundColor = '';
-        btn.style.color = '';
-    });
+    document.querySelectorAll('.tag-btn').forEach(btn => btn.classList.remove('active'));
     const topBtn = tag ? document.querySelector(`.tag-btn[data-tag="${tag}"]`) : document.getElementById('tag-all');
     if (topBtn) topBtn.classList.add('active');
 
-    // Sidebar knoppen
-    document.querySelectorAll('.sidebar-tag-btn').forEach(btn => btn.classList.remove('active'));
-    const sideBtn = tag
-        ? document.querySelector(`.sidebar-tag-btn[data-sidebar-tag="${tag}"]`)
-        : document.getElementById('sidebar-tag-all');
-    if (sideBtn) sideBtn.classList.add('active');
-
-    // Kaartjes filteren
-    let totalVisible = 0;
-    document.querySelectorAll('section[data-collection]').forEach(section => {
-        const cards = section.querySelectorAll('.kh-card');
-        let visible = 0;
-        cards.forEach(card => {
-            const tags = card.dataset.tags ? card.dataset.tags.split(',') : [];
-            const show = !tag || tags.includes(tag);
-            card.classList.toggle('hidden-by-filter', !show);
-            if (show) { visible++; totalVisible++; }
-        });
-        const noResults = section.querySelector('.kh-no-results');
-        if (noResults) noResults.classList.toggle('hidden', visible > 0);
-        section.style.display = (visible === 0 && tag) ? 'none' : '';
-    });
-
-    const emptyState = document.getElementById('kh-empty-state');
-    if (emptyState) {
-        emptyState.classList.toggle('hidden', totalVisible > 0);
-        emptyState.classList.toggle('flex', totalVisible === 0);
-    }
-
-    // Sluit mobiel sidebar na filter
+    khApplyFilters();
     khCloseSidebar();
 }
+
+// ── Zoeken ────────────────────────────────────────────────────────────────────
+
+function khSearch(value) {
+    activeSearch = value.trim().toLowerCase();
+
+    const clearBtn = document.getElementById('kh-search-clear');
+    if (clearBtn) clearBtn.classList.toggle('hidden', !activeSearch);
+
+    khApplyFilters();
+}
+
+function khClearSearch() {
+    activeSearch = '';
+    const input = document.getElementById('kh-search');
+    if (input) input.value = '';
+    const clearBtn = document.getElementById('kh-search-clear');
+    if (clearBtn) clearBtn.classList.add('hidden');
+    khApplyFilters();
+}
+
+// ── Sorteren op datum ─────────────────────────────────────────────────────────
+
+function khSort(direction) {
+    activeSort = direction;
+
+    // Knoppen updaten
+    document.getElementById('sort-new').classList.toggle('bg-sail-500', direction === 'new');
+    document.getElementById('sort-new').classList.toggle('text-white',  direction === 'new');
+    document.getElementById('sort-new').classList.toggle('bg-white',    direction !== 'new');
+    document.getElementById('sort-new').classList.toggle('text-slate-500', direction !== 'new');
+    document.getElementById('sort-old').classList.toggle('bg-sail-500', direction === 'old');
+    document.getElementById('sort-old').classList.toggle('text-white',  direction === 'old');
+    document.getElementById('sort-old').classList.toggle('bg-white',    direction !== 'old');
+    document.getElementById('sort-old').classList.toggle('text-slate-500', direction !== 'old');
+
+    // Kaartjes per sectie sorteren
+    document.querySelectorAll('section[data-collection] [data-cards]').forEach(grid => {
+        const cards = Array.from(grid.querySelectorAll('.kh-card'));
+        cards.sort((a, b) => {
+            const da = new Date(a.dataset.date || 0);
+            const db = new Date(b.dataset.date || 0);
+            return direction === 'new' ? db - da : da - db;
+        });
+        cards.forEach(c => grid.appendChild(c));
+    });
+}
+
+// ── Mobiel sidebar ────────────────────────────────────────────────────────────
 
 function khOpenSidebar() {
     document.getElementById('kh-sidebar').classList.add('open');
