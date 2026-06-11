@@ -5,10 +5,15 @@
 # GEBRUIK:
 #   Normale deploy (code only):     ./deploy.sh
 #   Allereerste keer (+ pagina's):  ./deploy.sh --initial
-#   Eén nieuwe pagina deployen:     ./deploy.sh --page 02.wiki/03.bevindingen/01.mijn-pagina
+#   Nieuwe pagina deployen:         ./deploy.sh --page 02.wiki/03.bevindingen/01.mijn-pagina
+#   Bestaande pagina updaten:       ./deploy.sh --page 02.wiki/03.bevindingen/01.mijn-pagina --force
 #
 # ⚠️  user/pages/ wordt NOOIT overschreven bij een gewone deploy.
 #     Dit beschermt wiki-inhoud die collega's via het admin dashboard bijhouden.
+#
+# VEILIGHEIDSREGEL voor --page:
+#   Bestaat de pagina al op de server? → geblokkeerd (gebruik --force om toch te overschrijven)
+#   Bestaat de pagina nog niet?        → gewoon uploaden
 #
 # HOE WERKT HET:
 #   lftp mirror vergelijkt bestandsgrootte + datum — stuurt alleen gewijzigde
@@ -88,19 +93,55 @@ elif [ "$1" == "--page" ]; then
     fi
 
     PAGE_PATH="$2"
+    FORCE="${3}"
     LOCAL_PAGE="$LOCAL/user/pages/$PAGE_PATH"
 
     if [ ! -d "$LOCAL_PAGE" ]; then
-        echo "❌ Map niet gevonden: $LOCAL_PAGE"
+        echo "❌ Lokale map niet gevonden: $LOCAL_PAGE"
         exit 1
     fi
 
-    echo "▶ PAGINA deploy — alleen deze map wordt geüpload:"
-    echo "  📄 user/pages/$PAGE_PATH"
-    echo "  ✅ Alle andere pagina's blijven onaangeraakt"
-    echo ""
-    read -p "  Doorgaan? (typ 'ja' om te bevestigen): " confirm
-    [ "$confirm" != "ja" ] && echo "Geannuleerd." && exit 0
+    # Controleer of de pagina al bestaat op de server
+    echo "→ Controleren of pagina al bestaat op de server..."
+    REMOTE_EXISTS=$(lftp -c "
+        set ftp:ssl-allow no;
+        open -u '$FTP_USER','$FTP_PASS' ftp://$FTP_HOST;
+        cls '$REMOTE_PATH/user/pages/$PAGE_PATH/' 2>/dev/null && echo 'exists' || echo 'new';
+    " 2>/dev/null | tail -1)
+
+    if [ "$REMOTE_EXISTS" = "exists" ] && [ "$FORCE" != "--force" ]; then
+        echo ""
+        echo "⛔  GEBLOKKEERD — deze pagina bestaat al op de server."
+        echo "    Pad: user/pages/$PAGE_PATH"
+        echo ""
+        echo "    Mogelijk heeft je collega deze pagina online aangemaakt of bewerkt."
+        echo "    Upload is geblokkeerd om overschrijven te voorkomen."
+        echo ""
+        echo "    Wil je toch uploaden? Gebruik dan:"
+        echo "    ./deploy.sh --page $PAGE_PATH --force"
+        echo ""
+        echo "    ⚠️  Let op: --force overschrijft alle bestanden in die map."
+        exit 1
+    fi
+
+    if [ "$REMOTE_EXISTS" = "exists" ] && [ "$FORCE" = "--force" ]; then
+        echo ""
+        echo "⚠️  WAARSCHUWING — je overschrijft een bestaande pagina met --force:"
+        echo "   📄 user/pages/$PAGE_PATH"
+        echo ""
+        echo "   Zorg dat je collega's wijzigingen niet verloren gaan!"
+        echo ""
+        read -p "  Ben je zeker? (typ 'overschrijven' om door te gaan): " confirm
+        [ "$confirm" != "overschrijven" ] && echo "Geannuleerd." && exit 0
+    else
+        echo ""
+        echo "▶ NIEUWE PAGINA deploy:"
+        echo "  📄 user/pages/$PAGE_PATH"
+        echo "  ✅ Alle andere pagina's blijven onaangeraakt"
+        echo ""
+        read -p "  Doorgaan? (typ 'ja' om te bevestigen): " confirm
+        [ "$confirm" != "ja" ] && echo "Geannuleerd." && exit 0
+    fi
 
     sync_dir "$LOCAL_PAGE" "user/pages/$PAGE_PATH"
 
