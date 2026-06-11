@@ -156,7 +156,7 @@
                         </div>
                         <div>
                             <h2 class="text-lg font-semibold text-slate-800">{{ collection.title }}</h2>
-                            <span class="text-xs text-slate-400">{{ collection.count }} {{ current_lang == 'en' ? 'sources' : 'bronnen' }}</span>
+                            <span class="kh-section-count text-xs text-slate-400">{{ collection.count }} {{ current_lang == 'en' ? 'sources' : 'bronnen' }}</span>
                         </div>
                     </div>
                     <div class="h-px flex-1 bg-slate-100 ml-4"></div>
@@ -305,12 +305,17 @@ function khApplyFilters() {
         if (show) visible++;
     });
 
-    // Secties tonen/verbergen + lege meldingen
+    // Secties tonen/verbergen + teller + lege meldingen
+    const isFiltered = activeTags.size > 0 || activeSearch || activeDate;
     document.querySelectorAll('section[data-collection]').forEach(section => {
         const sectionVisible = section.querySelectorAll('.kh-card:not(.hidden-by-filter)').length;
-        const noResults = section.querySelector('.kh-no-results');
-        if (noResults) noResults.classList.toggle('hidden', sectionVisible > 0);
-        section.style.display = (sectionVisible === 0 && (activeTag || activeSearch)) ? 'none' : '';
+        const noResults  = section.querySelector('.kh-no-results');
+        const countLabel = section.querySelector('.kh-section-count');
+        const label      = document.documentElement.lang === 'en' ? 'sources' : 'bronnen';
+
+        if (noResults)  noResults.classList.toggle('hidden', sectionVisible > 0);
+        if (countLabel) countLabel.textContent = `${sectionVisible} ${label}`;
+        section.style.display = (sectionVisible === 0 && isFiltered) ? 'none' : '';
     });
 
     // Zoekresultaat teller
