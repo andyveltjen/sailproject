@@ -178,13 +178,20 @@
                         {% endif %}
 
                         <div class="p-4 flex flex-col flex-1">
-                            {% if item.domain %}
-                            <div class="flex items-center gap-1.5 mb-2">
-                                <img src="https://www.google.com/s2/favicons?domain={{ item.domain }}&sz=16"
-                                     alt="" class="w-3.5 h-3.5 rounded-sm opacity-70" loading="lazy">
-                                <span class="text-xs text-slate-400 truncate">{{ item.domain }}</span>
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                {% if item.domain %}
+                                <div class="flex items-center gap-1.5 min-w-0">
+                                    <img src="https://www.google.com/s2/favicons?domain={{ item.domain }}&sz=16"
+                                         alt="" class="w-3.5 h-3.5 rounded-sm opacity-70 flex-shrink-0" loading="lazy">
+                                    <span class="text-xs text-slate-400 truncate">{{ item.domain }}</span>
+                                </div>
+                                {% endif %}
+                                {% if item.created %}
+                                <span class="text-[10px] text-slate-300 whitespace-nowrap flex-shrink-0">
+                                    {{ item.created|date('d/m/Y') }}
+                                </span>
+                                {% endif %}
                             </div>
-                            {% endif %}
 
                             <h3 class="text-sm font-semibold text-slate-800 leading-snug mb-2 line-clamp-2 group-hover:text-sail-700 transition-colors">
                                 {{ item.title }}
