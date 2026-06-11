@@ -296,7 +296,7 @@ function khApplyFilters() {
         const domain  = card.dataset.domain  || '';
 
         const cardMonth = (card.dataset.date || '').slice(0, 7); // "YYYY-MM"
-        const tagOk    = activeTags.size === 0 || tags.some(t => activeTags.has(t));
+        const tagOk    = activeTags.size === 0 || [...activeTags].every(t => tags.includes(t));
         const searchOk = !activeSearch || title.includes(activeSearch) || excerpt.includes(activeSearch) || domain.includes(activeSearch);
         const dateOk   = !activeDate   || cardMonth === activeDate;
         const show     = tagOk && searchOk && dateOk;
