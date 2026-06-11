@@ -357,6 +357,13 @@
 </section>
 {% endif %}
 
+{# ── Scroll-down indicator ── #}
+<div id="scroll-down-hint"
+     class="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-1 transition-opacity duration-500 pointer-events-none">
+    <span class="text-xs text-slate-400 tracking-wide">{{ current_lang == 'en' ? 'scroll' : 'scroll' }}</span>
+    <i class="fa fa-chevron-down text-sail-400 animate-bounce text-lg"></i>
+</div>
+
 {# ── Scroll-to-top knop ── #}
 <button id="scroll-top-btn"
         title="{{ current_lang == 'en' ? 'Back to top' : 'Terug naar boven' }}"
@@ -405,15 +412,24 @@
     // ── Scroll-to-top knop ───────────────────────────────────────────────────
     const btn = document.getElementById('scroll-top-btn');
     if (btn) {
-        window.addEventListener('scroll', () => {
-            btn.classList.toggle('opacity-0',        window.scrollY < 300);
-            btn.classList.toggle('pointer-events-none', window.scrollY < 300);
-            btn.classList.toggle('opacity-100',      window.scrollY >= 300);
-        }, { passive: true });
-
         btn.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+    }
+
+    // ── Scroll-down indicator ────────────────────────────────────────────────
+    const hint = document.getElementById('scroll-down-hint');
+    if (hint) {
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY > 80;
+            hint.style.opacity  = scrolled ? '0' : '1';
+            // scroll-to-top: omgekeerd
+            if (btn) {
+                btn.classList.toggle('opacity-0',           window.scrollY < 300);
+                btn.classList.toggle('pointer-events-none', window.scrollY < 300);
+                btn.classList.toggle('opacity-100',         window.scrollY >= 300);
+            }
+        }, { passive: true });
     }
 })();
 </script>
