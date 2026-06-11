@@ -103,22 +103,20 @@
     {# ── Tag-filters ── #}
     {% if raindrop_all_tags|length > 0 %}
     <div class="sticky top-16 z-40 bg-white/95 backdrop-blur border-b border-slate-100 shadow-sm">
-        {# Label enkel op desktop zichtbaar naast de scrollrij #}
-        <div class="flex items-center">
-            <span class="hidden sm:flex items-center gap-1.5 text-xs text-slate-400 font-medium whitespace-nowrap pl-6 pr-3 flex-shrink-0">
-                <i class="fa fa-tag"></i> Filter:
-            </span>
-            {# Scrollbare knoppenbalk — loopt over volledige breedte op mobile #}
-            <div class="flex items-center gap-2 overflow-x-auto py-3 px-4 sm:px-2 scrollbar-hide" style="-webkit-overflow-scrolling: touch;">
+        <div class="max-w-7xl mx-auto px-6 py-3">
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="text-xs text-slate-400 font-medium whitespace-nowrap">
+                    <i class="fa fa-tag"></i> Filter:
+                </span>
                 <button onclick="filterTag(null)" id="tag-all"
-                        class="tag-btn active flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-sail-500 text-white">
+                        class="tag-btn active inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-sail-500 text-white">
                     {% if current_lang == 'en' %}All sources{% else %}Alle bronnen{% endif %}
                 </button>
                 {% for tag in raindrop_all_tags %}
                 <button onclick="filterTag('{{ tag|e('js') }}')"
                         id="tag-{{ tag|replace({' ': '-', '/': '-'})|lower }}"
                         data-tag="{{ tag }}"
-                        class="tag-btn flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-slate-100 text-slate-600 hover:bg-sail-100 hover:text-sail-700 whitespace-nowrap">
+                        class="tag-btn inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-slate-100 text-slate-600 hover:bg-sail-100 hover:text-sail-700">
                     {{ tag }}
                 </button>
                 {% endfor %}
