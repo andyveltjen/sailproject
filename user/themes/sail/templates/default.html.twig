@@ -13,7 +13,7 @@
         </a>
         <nav id="main-nav" class="hidden md:flex items-center gap-6 text-sm text-slate-600">
             <a href="#project" data-section="project" class="nav-anchor transition-colors hover:text-sail-600">{{ 'SAIL.NAV_PROJECT'|t }}</a>
-            <a href="#wiki"    data-section="wiki"    class="nav-anchor transition-colors hover:text-sail-600">{{ 'SAIL.NAV_WIKI'|t }}</a>
+            <a href="{{ base_url_absolute }}/wiki" class="transition-colors hover:text-sail-600">{{ 'SAIL.NAV_WIKI'|t }}</a>
             <a href="#knowledge-hub" data-section="knowledge-hub" class="nav-anchor transition-colors hover:text-sail-600">{{ 'SAIL.NAV_KNOWLEDGE_HUB'|t }}</a>
         </nav>
         <div class="hidden md:flex items-center gap-4">
@@ -163,12 +163,7 @@
     <div class="max-w-6xl mx-auto">
         <div class="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-                <div class="inline-flex items-center gap-2 bg-sail-100 text-sail-700 text-xs font-medium px-3 py-1 rounded-full mb-3">
-                    <i class="fa fa-bookmark-o"></i> Knowledge Hub
-                </div>
-                <h2 class="text-3xl font-bold text-slate-900 mb-2">
-                    {{ current_lang == 'en' ? 'Knowledge Hub' : 'Knowledge Hub' }}
-                </h2>
+                <h2 class="text-3xl font-bold text-slate-900 mb-2">Knowledge Hub</h2>
                 <p class="text-slate-500 max-w-xl">
                     {{ current_lang == 'en'
                         ? 'Curated sources on AI, education and professional development — collected and tagged by the SAIL team.'
@@ -230,20 +225,12 @@
         </div>
         {% endif %}
 
-        <div class="mt-8 text-center">
-            <a href="{{ base_url_absolute }}/knowledge-hub"
-               class="inline-flex items-center gap-2 bg-sail-500 hover:bg-sail-600 text-white text-sm font-medium px-6 py-3 rounded-xl transition-colors">
-                <i class="fa fa-bookmark-o"></i>
-                {{ current_lang == 'en' ? 'Open Knowledge Hub' : 'Ga naar de Knowledge Hub' }}
-                <i class="fa fa-arrow-right text-xs"></i>
-            </a>
-        </div>
     </div>
 </section>
 
 {# ── Tijdlijn ── #}
 {% if h.timeline %}
-<section id="tijdlijn" class="py-20 px-6">
+<section id="tijdlijn" class="py-20 px-6 bg-slate-50">
     <div class="max-w-6xl mx-auto">
         <h2 class="text-3xl font-bold text-slate-900 mb-12">{{ h.timeline.title ?: 'Tijdlijn' }}</h2>
 
@@ -324,7 +311,7 @@
 
 {# ── Team ── #}
 {% if h.team %}
-<section id="team" class="py-20 px-6 bg-slate-50">
+<section id="team" class="py-20 px-6 bg-white">
     <div class="max-w-6xl mx-auto">
         <h2 class="text-3xl font-bold text-slate-900 mb-12">{{ h.team.title ?: 'Het team' }}</h2>
         <div class="grid md:grid-cols-3 gap-6">
