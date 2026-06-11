@@ -13,10 +13,8 @@
         </a>
         <nav id="main-nav" class="hidden md:flex items-center gap-6 text-sm text-slate-600">
             <a href="#project" data-section="project" class="nav-anchor transition-colors hover:text-sail-600">{{ 'SAIL.NAV_PROJECT'|t }}</a>
-            <a href="#wiki" data-section="wiki" class="nav-anchor transition-colors hover:text-sail-600">{{ 'SAIL.NAV_WIKI'|t }}</a>
-            <a href="{{ base_url_absolute }}/knowledge-hub" class="transition-colors hover:text-sail-600">Knowledge Hub</a>
-            <a href="#tijdlijn" data-section="tijdlijn" class="nav-anchor transition-colors hover:text-sail-600">{{ 'SAIL.NAV_TIMELINE'|t }}</a>
-            <a href="#team" data-section="team" class="nav-anchor transition-colors hover:text-sail-600">{{ 'SAIL.NAV_TEAM'|t }}</a>
+            <a href="#wiki"    data-section="wiki"    class="nav-anchor transition-colors hover:text-sail-600">{{ 'SAIL.NAV_WIKI'|t }}</a>
+            <a href="#knowledge-hub" data-section="knowledge-hub" class="nav-anchor transition-colors hover:text-sail-600">{{ 'SAIL.NAV_KNOWLEDGE_HUB'|t }}</a>
         </nav>
         <div class="hidden md:flex items-center gap-4">
             {# Taalwisselaar — root_url is altijd zonder taalprefix #}
@@ -160,6 +158,89 @@
 </section>
 {% endif %}
 
+{# ── Knowledge Hub preview ── #}
+<section id="knowledge-hub" class="py-20 px-6 bg-white">
+    <div class="max-w-6xl mx-auto">
+        <div class="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+                <div class="inline-flex items-center gap-2 bg-sail-100 text-sail-700 text-xs font-medium px-3 py-1 rounded-full mb-3">
+                    <i class="fa fa-bookmark-o"></i> Knowledge Hub
+                </div>
+                <h2 class="text-3xl font-bold text-slate-900 mb-2">
+                    {{ current_lang == 'en' ? 'Knowledge Hub' : 'Knowledge Hub' }}
+                </h2>
+                <p class="text-slate-500 max-w-xl">
+                    {{ current_lang == 'en'
+                        ? 'Curated sources on AI, education and professional development — collected and tagged by the SAIL team.'
+                        : 'Gecureerde bronnen over AI, onderwijs en professionele ontwikkeling — verzameld en gelabeld door het SAIL-team.' }}
+                </p>
+            </div>
+            <a href="{{ base_url_absolute }}/knowledge-hub"
+               class="inline-flex items-center gap-2 text-sail-600 hover:text-sail-800 text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0">
+                {{ current_lang == 'en' ? 'View all sources' : 'Bekijk alle bronnen' }}
+                <i class="fa fa-arrow-right text-xs"></i>
+            </a>
+        </div>
+
+        {% if raindrop_preview is defined and raindrop_preview|length > 0 %}
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {% for item in raindrop_preview %}
+            <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer"
+               class="group bg-slate-50 rounded-2xl p-5 border border-slate-200 hover:border-sail-300 hover:shadow-lg transition-all flex flex-col">
+                <div class="flex items-center gap-2 mb-3">
+                    {% if item.domain %}
+                    <img src="https://www.google.com/s2/favicons?domain={{ item.domain }}&sz=16"
+                         alt="" class="w-4 h-4 rounded-sm opacity-60" loading="lazy">
+                    <span class="text-xs text-slate-400 truncate">{{ item.domain }}</span>
+                    {% endif %}
+                </div>
+                <h3 class="font-semibold text-slate-900 text-sm leading-snug mb-2 line-clamp-3 group-hover:text-sail-700 transition-colors">
+                    {{ item.title }}
+                </h3>
+                {% if item.excerpt %}
+                <p class="text-xs text-slate-500 line-clamp-2 mb-3 flex-1">{{ item.excerpt }}</p>
+                {% else %}
+                <div class="flex-1"></div>
+                {% endif %}
+                {% if item.tags|length > 0 %}
+                <div class="flex flex-wrap gap-1 mt-auto pt-3 border-t border-slate-200">
+                    {% for tag in item.tags|slice(0,2) %}
+                    <span class="text-[10px] bg-sail-100 text-sail-600 px-2 py-0.5 rounded-full">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="mt-auto pt-3 border-t border-slate-200 flex items-center justify-between">
+                    <span class="text-xs text-sail-500 font-medium">{{ current_lang == 'en' ? 'Read more' : 'Lees meer' }}</span>
+                    <i class="fa fa-external-link text-xs text-sail-400 group-hover:translate-x-1 transition-transform"></i>
+                </div>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        {# Placeholder als Raindrop nog niet geconfigureerd is #}
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {% for i in 1..4 %}
+            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 h-40 animate-pulse">
+                <div class="h-3 bg-slate-200 rounded w-2/3 mb-3"></div>
+                <div class="h-3 bg-slate-200 rounded w-full mb-2"></div>
+                <div class="h-3 bg-slate-200 rounded w-4/5"></div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="mt-8 text-center">
+            <a href="{{ base_url_absolute }}/knowledge-hub"
+               class="inline-flex items-center gap-2 bg-sail-500 hover:bg-sail-600 text-white text-sm font-medium px-6 py-3 rounded-xl transition-colors">
+                <i class="fa fa-bookmark-o"></i>
+                {{ current_lang == 'en' ? 'Open Knowledge Hub' : 'Ga naar de Knowledge Hub' }}
+                <i class="fa fa-arrow-right text-xs"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
 {# ── Tijdlijn ── #}
 {% if h.timeline %}
 <section id="tijdlijn" class="py-20 px-6">
@@ -289,6 +370,13 @@
 </section>
 {% endif %}
 
+{# ── Scroll-to-top knop ── #}
+<button id="scroll-top-btn"
+        title="{{ current_lang == 'en' ? 'Back to top' : 'Terug naar boven' }}"
+        class="fixed bottom-6 right-6 z-50 w-11 h-11 rounded-full bg-sail-500 hover:bg-sail-600 text-white shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 pointer-events-none">
+    <i class="fa fa-chevron-up text-sm"></i>
+</button>
+
 {# ── Footer ── #}
 <footer id="contact" class="py-12 px-6 bg-slate-900 text-slate-400">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
@@ -307,8 +395,9 @@
 
 <script>
 (function () {
-    const anchors = document.querySelectorAll('#main-nav .nav-anchor');
-    const sections = ['project', 'wiki', 'tijdlijn', 'team'].map(id => document.getElementById(id)).filter(Boolean);
+    // ── Actieve nav-sectie markeren ──────────────────────────────────────────
+    const anchors  = document.querySelectorAll('#main-nav .nav-anchor');
+    const sections = ['project', 'wiki', 'knowledge-hub'].map(id => document.getElementById(id)).filter(Boolean);
 
     function setActive(id) {
         anchors.forEach(a => {
@@ -325,6 +414,20 @@
     }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
 
     sections.forEach(s => observer.observe(s));
+
+    // ── Scroll-to-top knop ───────────────────────────────────────────────────
+    const btn = document.getElementById('scroll-top-btn');
+    if (btn) {
+        window.addEventListener('scroll', () => {
+            btn.classList.toggle('opacity-0',        window.scrollY < 300);
+            btn.classList.toggle('pointer-events-none', window.scrollY < 300);
+            btn.classList.toggle('opacity-100',      window.scrollY >= 300);
+        }, { passive: true });
+
+        btn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
 })();
 </script>
 

@@ -5,116 +5,95 @@
 {% set raw = page.rawRoute %}
 
 {% block body %}
-<div class="min-h-screen bg-slate-50">
+<div class="flex h-screen overflow-hidden bg-white">
 
-    {# ── Top navigation ── #}
-    <header class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur border-b border-slate-100 px-6">
-        <div class="max-w-7xl mx-auto h-16 flex items-center justify-between">
-            <a href="{{ base_url_absolute }}" class="flex items-center">
-                <img src="{{ url('theme://images/logo.png') }}" alt="{{ site.title }}" class="h-9 w-auto">
-            </a>
+    {# ── Sidebar ── #}
+    <aside id="kh-sidebar"
+           class="fixed md:static z-40 flex flex-col w-72 h-full bg-white border-r border-slate-100 overflow-y-auto flex-shrink-0">
 
-            {# Desktop nav #}
-            <nav class="hidden md:flex items-center gap-6 text-sm text-slate-600">
-                <a href="{{ base_url_absolute }}#project"  class="hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_PROJECT'|t }}</a>
-                <a href="{{ base_url_absolute }}/wiki"     class="hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_WIKI'|t }}</a>
-                <a href="{{ base_url_absolute }}/knowledge-hub"
-                   class="text-sail-600 font-semibold border-b-2 border-sail-500 pb-0.5">Knowledge Hub</a>
-                <a href="{{ base_url_absolute }}#tijdlijn" class="hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_TIMELINE'|t }}</a>
-                <a href="{{ base_url_absolute }}#team"     class="hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_TEAM'|t }}</a>
-            </nav>
-
-            {# Desktop rechts: taalwisselaar + Wiki-knop #}
-            <div class="hidden md:flex items-center gap-4">
-                <div class="flex items-center gap-1.5 text-xs text-slate-400">
+        {# Logo + taalwisselaar #}
+        <div class="px-5 py-4 border-b border-slate-100">
+            <div class="flex items-start">
+                <div class="flex-1 flex flex-col items-center gap-1">
+                    <a href="{{ base_url_absolute }}">
+                        <img src="{{ url('theme://images/logo.png') }}" alt="{{ site.title }}" class="h-10 w-auto">
+                    </a>
+                    <span class="text-sail-500 text-sm font-medium">Knowledge Hub</span>
+                </div>
+                <div class="flex-shrink-0 flex items-center gap-1.5 text-xs text-slate-400 mt-1">
                     <a href="{{ root_url }}{{ raw }}"
                        class="transition-colors {% if current_lang == 'nl' or not current_lang %}text-slate-700 font-semibold{% else %}hover:text-slate-600{% endif %}">NL</a>
                     <span class="text-slate-300">·</span>
                     <a href="{{ root_url }}/en{{ raw }}"
                        class="transition-colors {% if current_lang == 'en' %}text-slate-700 font-semibold{% else %}hover:text-slate-600{% endif %}">EN</a>
                 </div>
-                <a href="{{ base_url_absolute }}/wiki"
-                   class="inline-flex items-center gap-2 bg-sail-500 hover:bg-sail-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
-                    Wiki <i class="fa fa-arrow-right text-xs"></i>
-                </a>
             </div>
+        </div>
 
-            {# Mobiel: hamburger #}
-            <button id="kh-menu-btn" onclick="khToggleMenu()"
-                    class="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors">
+        {# Terug naar project #}
+        <div class="px-4 pt-3 pb-1">
+            <a href="{{ base_url_absolute }}" class="flex items-center gap-2 text-slate-400 hover:text-sail-600 text-xs transition-colors">
+                <i class="fa fa-arrow-left"></i> {{ 'SAIL.BACK_TO_PROJECT'|t }}
+            </a>
+        </div>
+
+        {# Tag-navigatie #}
+        {% if raindrop_all_tags|length > 0 %}
+        <nav class="px-3 pb-6 overflow-y-auto flex-1">
+            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2 mt-3">
+                {{ current_lang == 'en' ? 'Filter by label' : 'Filter op label' }}
+            </div>
+            <ul class="space-y-0.5">
+                <li>
+                    <button onclick="filterTag(null)" id="sidebar-tag-all"
+                            class="sidebar-tag-btn w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors bg-sail-50 text-sail-600 font-semibold">
+                        <i class="fa fa-circle text-xs flex-shrink-0"></i>
+                        <span>{{ current_lang == 'en' ? 'All sources' : 'Alle bronnen' }}</span>
+                    </button>
+                </li>
+                {% for tag in raindrop_all_tags %}
+                <li>
+                    <button onclick="filterTag('{{ tag|e('js') }}')"
+                            data-sidebar-tag="{{ tag }}"
+                            class="sidebar-tag-btn w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-500 hover:bg-sail-50 hover:text-sail-600 transition-colors">
+                        <i class="fa fa-circle-o text-xs flex-shrink-0 opacity-40"></i>
+                        <span>{{ tag }}</span>
+                    </button>
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+        {% endif %}
+
+    </aside>
+
+    {# ── Mobile overlay ── #}
+    <div id="kh-sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden" onclick="khCloseSidebar()"></div>
+
+    {# ── Hoofdinhoud ── #}
+    <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+
+        {# Mobiele topbar #}
+        <div class="md:hidden flex items-center gap-3 px-4 py-3 border-b border-slate-100 sticky top-0 bg-white z-20">
+            <button onclick="khOpenSidebar()" class="text-slate-600 hover:text-slate-900">
                 <i class="fa fa-bars text-lg"></i>
             </button>
+            <span class="text-sm font-medium text-slate-700 truncate">{{ page.title }}</span>
         </div>
 
-        {# Mobiel dropdown-menu #}
-        <div id="kh-mobile-menu"
-             class="md:hidden hidden border-t border-slate-100 bg-white/95 backdrop-blur pb-4">
-            <nav class="flex flex-col px-4 pt-3 gap-1 text-sm text-slate-600">
-                <a href="{{ base_url_absolute }}#project"  class="py-2 px-3 rounded-lg hover:bg-sail-50 hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_PROJECT'|t }}</a>
-                <a href="{{ base_url_absolute }}/wiki"     class="py-2 px-3 rounded-lg hover:bg-sail-50 hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_WIKI'|t }}</a>
-                <a href="{{ base_url_absolute }}/knowledge-hub"
-                   class="py-2 px-3 rounded-lg bg-sail-50 text-sail-600 font-semibold">Knowledge Hub</a>
-                <a href="{{ base_url_absolute }}#tijdlijn" class="py-2 px-3 rounded-lg hover:bg-sail-50 hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_TIMELINE'|t }}</a>
-                <a href="{{ base_url_absolute }}#team"     class="py-2 px-3 rounded-lg hover:bg-sail-50 hover:text-sail-600 transition-colors">{{ 'SAIL.NAV_TEAM'|t }}</a>
-            </nav>
-            <div class="flex items-center gap-3 px-7 pt-3 border-t border-slate-100 mt-2">
-                <a href="{{ root_url }}{{ raw }}"
-                   class="text-xs transition-colors {% if current_lang == 'nl' or not current_lang %}text-slate-700 font-semibold{% else %}text-slate-400 hover:text-slate-600{% endif %}">NL</a>
-                <span class="text-slate-300 text-xs">·</span>
-                <a href="{{ root_url }}/en{{ raw }}"
-                   class="text-xs transition-colors {% if current_lang == 'en' %}text-slate-700 font-semibold{% else %}text-slate-400 hover:text-slate-600{% endif %}">EN</a>
-            </div>
-        </div>
-    </header>
-
-    {# ── Hero ── #}
-    <section class="pt-32 pb-10 px-6 bg-gradient-to-br from-slate-50 via-sail-50 to-white">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex items-start justify-between flex-wrap gap-4">
-                <div>
-                    <div class="flex items-center gap-2 mb-3">
-                        <span class="inline-flex items-center gap-2 bg-sail-100 text-sail-700 text-xs font-medium px-3 py-1 rounded-full">
-                            <i class="fa fa-bookmark-o"></i> Knowledge Hub
-                        </span>
-                    </div>
-                    <h1 class="text-4xl font-bold text-slate-900 mb-2">{{ page.title }}</h1>
-                    <p class="text-lg text-slate-500 max-w-2xl">{{ page.header.subtitle ?? '' }}</p>
-                </div>
-                <a href="{{ base_url_absolute }}" class="flex items-center gap-2 text-slate-400 hover:text-sail-600 text-sm transition-colors mt-1">
-                    <i class="fa fa-arrow-left"></i> {{ 'SAIL.BACK_TO_PROJECT'|t }}
-                </a>
-            </div>
-        </div>
-    </section>
-
-    {# ── Foutmelding ── #}
-    {% if raindrop_error %}
-    <div class="max-w-7xl mx-auto px-6 mt-6">
-        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
-            <i class="fa fa-exclamation-triangle text-amber-500 mt-0.5"></i>
-            <div>
-                <p class="text-sm font-medium text-amber-800">Configuratie vereist</p>
-                <p class="text-sm text-amber-700 mt-0.5">{{ raindrop_error }}</p>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    {# ── Tag-filters ── #}
-    {% if raindrop_all_tags|length > 0 %}
-    <div class="sticky top-16 z-40 bg-white/95 backdrop-blur border-b border-slate-100 shadow-sm">
-        <div class="max-w-7xl mx-auto px-6 py-3">
+        {# ── Tag-filterbar (sticky boven de kaartjes) ── #}
+        {% if raindrop_all_tags|length > 0 %}
+        <div class="sticky top-0 md:top-0 z-10 bg-white/95 backdrop-blur border-b border-slate-100 px-6 py-3 shadow-sm">
             <div class="flex flex-wrap items-center gap-2">
                 <span class="text-xs text-slate-400 font-medium whitespace-nowrap">
                     <i class="fa fa-tag"></i> Filter:
                 </span>
                 <button onclick="filterTag(null)" id="tag-all"
-                        class="tag-btn active inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-sail-500 text-white">
-                    {% if current_lang == 'en' %}All sources{% else %}Alle bronnen{% endif %}
+                        class="tag-btn active inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-sail-500 text-white">
+                    {{ current_lang == 'en' ? 'All sources' : 'Alle bronnen' }}
                 </button>
                 {% for tag in raindrop_all_tags %}
                 <button onclick="filterTag('{{ tag|e('js') }}')"
-                        id="tag-{{ tag|replace({' ': '-', '/': '-'})|lower }}"
                         data-tag="{{ tag }}"
                         class="tag-btn inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-slate-100 text-slate-600 hover:bg-sail-100 hover:text-sail-700">
                     {{ tag }}
@@ -122,218 +101,214 @@
                 {% endfor %}
             </div>
         </div>
-    </div>
-    {% endif %}
+        {% endif %}
 
-    {# ── Collecties & kaartjes ── #}
-    <main class="max-w-7xl mx-auto px-6 py-10" id="kh-main">
+        {# ── Content ── #}
+        <main class="flex-1 px-6 py-10 max-w-6xl w-full mx-auto">
 
-        {% if raindrop_collections|length == 0 and not raindrop_error %}
+            {# Paginatitel #}
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-900 mb-2">{{ page.title }}</h1>
+                {% if page.header.subtitle %}
+                <p class="text-slate-500 max-w-2xl">{{ page.header.subtitle }}</p>
+                {% endif %}
+            </div>
+
+            {# Foutmelding #}
+            {% if raindrop_error %}
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3 mb-8">
+                <i class="fa fa-exclamation-triangle text-amber-500 mt-0.5"></i>
+                <div>
+                    <p class="text-sm font-medium text-amber-800">Configuratie vereist</p>
+                    <p class="text-sm text-amber-700 mt-0.5">{{ raindrop_error }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {# Lege staat #}
+            {% if raindrop_collections|length == 0 and not raindrop_error %}
             <div class="flex flex-col items-center justify-center py-24 text-center">
                 <div class="w-16 h-16 rounded-2xl bg-sail-50 flex items-center justify-center mb-4">
                     <i class="fa fa-bookmark-o text-sail-300 text-2xl"></i>
                 </div>
-                <p class="text-slate-400 text-sm">Nog geen bookmarks gevonden. Controleer de collectie-ID in de plugin-configuratie.</p>
+                <p class="text-slate-400 text-sm">Nog geen bookmarks gevonden.</p>
             </div>
-        {% endif %}
+            {% endif %}
 
-        {% for collection in raindrop_collections %}
-        <section class="mb-14" data-collection="{{ collection.id }}">
+            {# Collecties & kaartjes #}
+            {% for collection in raindrop_collections %}
+            <section class="mb-14" data-collection="{{ collection.id }}">
 
-            {# Sectie-header #}
-            <div class="flex items-center justify-between mb-5">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-sail-100 flex items-center justify-center flex-shrink-0">
-                        <i class="fa fa-folder-o text-sail-500 text-sm"></i>
+                <div class="flex items-center mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-sail-100 flex items-center justify-center flex-shrink-0">
+                            <i class="fa fa-folder-o text-sail-500 text-sm"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold text-slate-800">{{ collection.title }}</h2>
+                            <span class="text-xs text-slate-400">{{ collection.count }} {{ current_lang == 'en' ? 'sources' : 'bronnen' }}</span>
+                        </div>
                     </div>
-                    <div>
-                        <h2 class="text-lg font-semibold text-slate-800">{{ collection.title }}</h2>
-                        <span class="text-xs text-slate-400">{{ collection.count }} {% if current_lang == 'en' %}sources{% else %}bronnen{% endif %}</span>
-                    </div>
+                    <div class="h-px flex-1 bg-slate-100 ml-4"></div>
                 </div>
-                <div class="h-px flex-1 bg-slate-100 ml-4"></div>
-            </div>
 
-            {# Kaartjes grid #}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" data-cards>
-                {% for item in collection.items %}
-                <article class="kh-card bg-white rounded-xl border border-slate-100 hover:border-sail-200 hover:shadow-md transition-all flex flex-col overflow-hidden group"
-                         data-tags="{{ item.tags|join(',') }}">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" data-cards>
+                    {% for item in collection.items %}
+                    <article class="kh-card bg-white rounded-xl border border-slate-100 hover:border-sail-200 hover:shadow-md transition-all flex flex-col overflow-hidden group"
+                             data-tags="{{ item.tags|join(',') }}">
 
-                    {# Cover of domain-banner #}
-                    {% if item.cover and item.cover != '' %}
-                    <div class="h-28 overflow-hidden bg-slate-100 flex-shrink-0">
-                        <img src="{{ item.cover }}" alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.parentElement.classList.add('hidden')">
+                        {% if item.cover and item.cover != '' %}
+                        <div class="h-28 overflow-hidden bg-slate-100 flex-shrink-0">
+                            <img src="{{ item.cover }}" alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.parentElement.classList.add('hidden')">
+                        </div>
+                        {% endif %}
+
+                        <div class="p-4 flex flex-col flex-1">
+                            {% if item.domain %}
+                            <div class="flex items-center gap-1.5 mb-2">
+                                <img src="https://www.google.com/s2/favicons?domain={{ item.domain }}&sz=16"
+                                     alt="" class="w-3.5 h-3.5 rounded-sm opacity-70" loading="lazy">
+                                <span class="text-xs text-slate-400 truncate">{{ item.domain }}</span>
+                            </div>
+                            {% endif %}
+
+                            <h3 class="text-sm font-semibold text-slate-800 leading-snug mb-2 line-clamp-2 group-hover:text-sail-700 transition-colors">
+                                {{ item.title }}
+                            </h3>
+
+                            {% if item.excerpt %}
+                            <p class="text-xs text-slate-500 leading-relaxed mb-3 line-clamp-3 flex-1">{{ item.excerpt }}</p>
+                            {% else %}
+                            <div class="flex-1"></div>
+                            {% endif %}
+
+                            {% if item.tags|length > 0 %}
+                            <div class="flex flex-wrap gap-1 mb-3">
+                                {% for tag in item.tags|slice(0, 3) %}
+                                <button onclick="filterTag('{{ tag|e('js') }}')"
+                                        class="inline-block text-[10px] bg-sail-50 text-sail-600 hover:bg-sail-100 px-2 py-0.5 rounded-full transition-colors">
+                                    {{ tag }}
+                                </button>
+                                {% endfor %}
+                                {% if item.tags|length > 3 %}
+                                <span class="text-[10px] text-slate-400 px-1 py-0.5">+{{ item.tags|length - 3 }}</span>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer"
+                               class="inline-flex items-center gap-1.5 text-xs text-sail-600 hover:text-sail-800 font-medium transition-colors mt-auto">
+                                {{ current_lang == 'en' ? 'Open source' : 'Bron bekijken' }}
+                                <i class="fa fa-external-link text-[10px]"></i>
+                            </a>
+                        </div>
+                    </article>
+                    {% endfor %}
+
+                    {% if collection.items|length == 0 %}
+                    <div class="col-span-full text-sm text-slate-400 py-4 italic">
+                        {{ current_lang == 'en' ? 'No items in this collection yet.' : 'Nog geen items in deze collectie.' }}
                     </div>
                     {% endif %}
-
-                    <div class="p-4 flex flex-col flex-1">
-                        {# Domain #}
-                        {% if item.domain %}
-                        <div class="flex items-center gap-1.5 mb-2">
-                            <img src="https://www.google.com/s2/favicons?domain={{ item.domain }}&sz=16"
-                                 alt="" class="w-3.5 h-3.5 rounded-sm opacity-70" loading="lazy">
-                            <span class="text-xs text-slate-400 truncate">{{ item.domain }}</span>
-                        </div>
-                        {% endif %}
-
-                        {# Titel #}
-                        <h3 class="text-sm font-semibold text-slate-800 leading-snug mb-2 line-clamp-2 group-hover:text-sail-700 transition-colors">
-                            {{ item.title }}
-                        </h3>
-
-                        {# Excerpt #}
-                        {% if item.excerpt %}
-                        <p class="text-xs text-slate-500 leading-relaxed mb-3 line-clamp-3 flex-1">
-                            {{ item.excerpt }}
-                        </p>
-                        {% else %}
-                        <div class="flex-1"></div>
-                        {% endif %}
-
-                        {# Tags #}
-                        {% if item.tags|length > 0 %}
-                        <div class="flex flex-wrap gap-1 mb-3">
-                            {% for tag in item.tags|slice(0, 3) %}
-                            <button onclick="filterTag('{{ tag|e('js') }}')"
-                                    class="inline-block text-[10px] bg-sail-50 text-sail-600 hover:bg-sail-100 px-2 py-0.5 rounded-full transition-colors">
-                                {{ tag }}
-                            </button>
-                            {% endfor %}
-                            {% if item.tags|length > 3 %}
-                            <span class="text-[10px] text-slate-400 px-1 py-0.5">+{{ item.tags|length - 3 }}</span>
-                            {% endif %}
-                        </div>
-                        {% endif %}
-
-                        {# Link #}
-                        <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer"
-                           class="inline-flex items-center gap-1.5 text-xs text-sail-600 hover:text-sail-800 font-medium transition-colors mt-auto">
-                            {% if current_lang == 'en' %}Open source{% else %}Bron bekijken{% endif %}
-                            <i class="fa fa-external-link text-[10px]"></i>
-                        </a>
-                    </div>
-                </article>
-                {% endfor %}
-
-                {# Lege collectie #}
-                {% if collection.items|length == 0 %}
-                <div class="col-span-full text-sm text-slate-400 py-4 italic">
-                    {% if current_lang == 'en' %}No items in this collection yet.{% else %}Nog geen items in deze collectie.{% endif %}
                 </div>
-                {% endif %}
+
+                <div class="kh-no-results hidden text-sm text-slate-400 py-4 italic mt-2">
+                    {{ current_lang == 'en' ? 'No results for this filter.' : 'Geen resultaten voor dit filter.' }}
+                </div>
+
+            </section>
+            {% endfor %}
+
+            {# Globale lege staat na filter #}
+            <div id="kh-empty-state" class="hidden flex-col items-center justify-center py-20 text-center">
+                <div class="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
+                    <i class="fa fa-search text-slate-300 text-xl"></i>
+                </div>
+                <p class="text-slate-400 text-sm">
+                    {{ current_lang == 'en' ? 'No sources found for this tag.' : 'Geen bronnen gevonden voor dit label.' }}
+                </p>
+                <button onclick="filterTag(null)" class="mt-3 text-sail-500 hover:text-sail-700 text-sm transition-colors">
+                    ← {{ current_lang == 'en' ? 'Show all' : 'Toon alles' }}
+                </button>
             </div>
 
-            {# Geen resultaten na filter #}
-            <div class="kh-no-results hidden col-span-full text-sm text-slate-400 py-4 italic mt-2">
-                {% if current_lang == 'en' %}No results for this filter.{% else %}Geen resultaten voor dit filter.{% endif %}
-            </div>
+        </main>
 
-        </section>
-        {% endfor %}
-
-        {# Globale lege staat na filter #}
-        <div id="kh-empty-state" class="hidden flex-col items-center justify-center py-20 text-center">
-            <div class="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
-                <i class="fa fa-search text-slate-300 text-xl"></i>
-            </div>
-            <p class="text-slate-400 text-sm">
-                {% if current_lang == 'en' %}No sources found for this tag.{% else %}Geen bronnen gevonden voor dit label.{% endif %}
-            </p>
-            <button onclick="filterTag(null)" class="mt-3 text-sail-500 hover:text-sail-700 text-sm transition-colors">
-                ← {% if current_lang == 'en' %}Show all{% else %}Toon alles{% endif %}
-            </button>
-        </div>
-    </main>
-
-    {# ── Footer ── #}
-    <footer class="border-t border-slate-100 px-8 py-4 text-xs text-slate-400 flex items-center justify-between">
-        <span>{{ site.title }} — Knowledge Hub</span>
-        <a href="{{ base_url_absolute }}" class="hover:text-sail-500 transition-colors">← {{ 'SAIL.BACK_TO_PROJECT'|t }}</a>
-    </footer>
-
+        {# Footer #}
+        <footer class="border-t border-slate-100 px-8 py-4 text-xs text-slate-400 flex items-center justify-between">
+            <span>{{ site.title }} — Knowledge Hub</span>
+            <a href="{{ base_url_absolute }}" class="hover:text-sail-500 transition-colors">← {{ 'SAIL.BACK_TO_PROJECT'|t }}</a>
+        </footer>
+    </div>
 </div>
 
 <style>
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-    .scrollbar-hide::-webkit-scrollbar { display: none; }
-    .tag-btn.active { background-color: #4a7c8c; color: white; }
-    .kh-card { transition: opacity 0.2s ease, transform 0.2s ease; }
+    .tag-btn.active { background-color: #4a7c8c !important; color: white !important; }
     .kh-card.hidden-by-filter { display: none; }
+    .sidebar-tag-btn.active { background-color: #edf5f7; color: #4a7c8c; font-weight: 600; }
+    @media (max-width: 768px) {
+        #kh-sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+        #kh-sidebar.open { transform: translateX(0); }
+    }
 </style>
 
 <script>
-// ── Mobiel menu ──────────────────────────────────────────────────────────────
-function khToggleMenu() {
-    const menu = document.getElementById('kh-mobile-menu');
-    const btn  = document.getElementById('kh-menu-btn');
-    const open = menu.classList.toggle('hidden');
-    btn.querySelector('i').className = open ? 'fa fa-bars text-lg' : 'fa fa-times text-lg';
-}
-
-// Sluit menu bij klik buiten de header
-document.addEventListener('click', function(e) {
-    const header = document.querySelector('header');
-    if (!header.contains(e.target)) {
-        const menu = document.getElementById('kh-mobile-menu');
-        const btn  = document.getElementById('kh-menu-btn');
-        if (menu && !menu.classList.contains('hidden')) {
-            menu.classList.add('hidden');
-            btn.querySelector('i').className = 'fa fa-bars text-lg';
-        }
-    }
-});
-
-// ── Tag filtering ────────────────────────────────────────────────────────────
 let activeTag = null;
 
 function filterTag(tag) {
     activeTag = tag;
 
-    // Buttons updaten
+    // Filterbar knoppen
     document.querySelectorAll('.tag-btn').forEach(btn => {
-        btn.classList.remove('active', 'bg-sail-500', 'text-white');
-        btn.classList.add('bg-slate-100', 'text-slate-600');
+        btn.classList.remove('active');
+        btn.style.backgroundColor = '';
+        btn.style.color = '';
     });
+    const topBtn = tag ? document.querySelector(`.tag-btn[data-tag="${tag}"]`) : document.getElementById('tag-all');
+    if (topBtn) topBtn.classList.add('active');
 
-    const targetBtn = tag
-        ? document.querySelector(`[data-tag="${tag}"]`)
-        : document.getElementById('tag-all');
-    if (targetBtn) {
-        targetBtn.classList.add('active', 'bg-sail-500', 'text-white');
-        targetBtn.classList.remove('bg-slate-100', 'text-slate-600');
-    }
+    // Sidebar knoppen
+    document.querySelectorAll('.sidebar-tag-btn').forEach(btn => btn.classList.remove('active'));
+    const sideBtn = tag
+        ? document.querySelector(`.sidebar-tag-btn[data-sidebar-tag="${tag}"]`)
+        : document.getElementById('sidebar-tag-all');
+    if (sideBtn) sideBtn.classList.add('active');
 
     // Kaartjes filteren
     let totalVisible = 0;
     document.querySelectorAll('section[data-collection]').forEach(section => {
         const cards = section.querySelectorAll('.kh-card');
-        let visibleInSection = 0;
-
+        let visible = 0;
         cards.forEach(card => {
-            const cardTags = card.dataset.tags ? card.dataset.tags.split(',') : [];
-            const show = !tag || cardTags.includes(tag);
+            const tags = card.dataset.tags ? card.dataset.tags.split(',') : [];
+            const show = !tag || tags.includes(tag);
             card.classList.toggle('hidden-by-filter', !show);
-            if (show) {
-                visibleInSection++;
-                totalVisible++;
-            }
+            if (show) { visible++; totalVisible++; }
         });
-
-        // Sectie tonen/verbergen + lege melding
         const noResults = section.querySelector('.kh-no-results');
-        if (noResults) noResults.classList.toggle('hidden', visibleInSection > 0);
-        section.style.display = (visibleInSection === 0 && tag) ? 'none' : '';
+        if (noResults) noResults.classList.toggle('hidden', visible > 0);
+        section.style.display = (visible === 0 && tag) ? 'none' : '';
     });
 
-    // Globale lege staat
     const emptyState = document.getElementById('kh-empty-state');
     if (emptyState) {
         emptyState.classList.toggle('hidden', totalVisible > 0);
         emptyState.classList.toggle('flex', totalVisible === 0);
     }
+
+    // Sluit mobiel sidebar na filter
+    khCloseSidebar();
+}
+
+function khOpenSidebar() {
+    document.getElementById('kh-sidebar').classList.add('open');
+    document.getElementById('kh-sidebar-overlay').classList.remove('hidden');
+}
+function khCloseSidebar() {
+    document.getElementById('kh-sidebar').classList.remove('open');
+    document.getElementById('kh-sidebar-overlay').classList.add('hidden');
 }
 </script>
 {% endblock %}

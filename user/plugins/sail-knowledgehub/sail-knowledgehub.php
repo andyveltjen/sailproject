@@ -25,15 +25,20 @@ class SailKnowledgehubPlugin extends Plugin
 
     public function onTwigSiteVariables(): void
     {
-        $page = $this->grav['page'];
-        if ($page->template() !== 'knowledge-hub') {
-            return;
+        $page     = $this->grav['page'];
+        $template = $page->template();
+
+        if ($template === 'knowledge-hub') {
+            $data = $this->fetchKnowledgeHubData();
+            $this->grav['twig']->twig_vars['raindrop_collections'] = $data['collections'];
+            $this->grav['twig']->twig_vars['raindrop_all_tags']    = $data['all_tags'];
+            $this->grav['twig']->twig_vars['raindrop_error']       = $data['error'] ?? null;
         }
 
-        $data = $this->fetchKnowledgeHubData();
-        $this->grav['twig']->twig_vars['raindrop_collections'] = $data['collections'];
-        $this->grav['twig']->twig_vars['raindrop_all_tags']    = $data['all_tags'];
-        $this->grav['twig']->twig_vars['raindrop_error']       = $data['error'] ?? null;
+        if ($template === 'default') {
+            // Injecteer de 4 meest recente bookmarks als preview op de homepage
+            $this->grav['twig']->twig_vars['raindrop_preview'] = $this->fetchPreviewItems(4);
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -152,6 +157,52 @@ class SailKnowledgehubPlugin extends Plugin
 
         $cache->save($cacheId, $result, $cacheTtl);
         return $result;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Preview: 4 meest recente items voor de homepage
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private function fetchPreviewItems(int $count = 4): array
+    {
+        $token    = $this->getToken();
+        $parentId = $this->config->get('plugins.sail-knowledgehub.collection_id', '');
+        $cacheTtl = (int) $this->config->get('plugins.sail-knowledgehub.cache_ttl', 3600);
+
+        if (empty($token)) {
+            return [];
+        }
+
+        $cache   = $this->grav['cache'];
+        $cacheId = md5('sail_raindrop_preview_' . $parentId . '_' . $count);
+        $cached  = $cache->fetch($cacheId);
+        if ($cached !== false) {
+            return $cached;
+        }
+
+        // Gebruik de collectie zelf of -1 voor alle items
+        $colId   = !empty($parentId) ? $parentId : '-1';
+        $response = $this->apiGet(
+            "https://api.raindrop.io/rest/v1/raindrops/{$colId}?perpage={$count}&sort=-created",
+            $token
+        );
+
+        $items = [];
+        if (!empty($response['items'])) {
+            foreach ($response['items'] as $item) {
+                $items[] = [
+                    'title'   => $item['title'] ?? '',
+                    'excerpt' => $item['excerpt'] ?? '',
+                    'link'    => $item['link'] ?? '#',
+                    'domain'  => $item['domain'] ?? '',
+                    'tags'    => $item['tags'] ?? [],
+                    'cover'   => $item['cover'] ?? '',
+                ];
+            }
+        }
+
+        $cache->save($cacheId, $items, $cacheTtl);
+        return $items;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
