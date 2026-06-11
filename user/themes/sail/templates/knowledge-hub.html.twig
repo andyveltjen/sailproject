@@ -311,7 +311,10 @@ function khApplyFilters() {
         const sectionVisible = section.querySelectorAll('.kh-card:not(.hidden-by-filter)').length;
         const noResults  = section.querySelector('.kh-no-results');
         const countLabel = section.querySelector('.kh-section-count');
-        const label      = document.documentElement.lang === 'en' ? 'sources' : 'bronnen';
+        const isEn  = document.documentElement.lang === 'en';
+        const label = sectionVisible === 1
+            ? (isEn ? 'source' : 'bron')
+            : (isEn ? 'sources' : 'bronnen');
 
         if (noResults)  noResults.classList.toggle('hidden', sectionVisible > 0);
         if (countLabel) countLabel.textContent = `${sectionVisible} ${label}`;
