@@ -1,8 +1,10 @@
 ---
-title: 'AI definitions and concepts'
+title: 'Fundamentals of Artificial Intelligence'
 taxonomy:
   category:
     - docs
+  tag:
+    - '#fundamental'
 ---
 
 ## What is AI in education context?

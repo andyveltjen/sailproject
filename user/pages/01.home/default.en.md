@@ -73,8 +73,8 @@ timeline:
     -
       name: 'Design & testing educational scenarios'
       period: 'May 2026 - Aug 2027'
-      status: Scheduled
-      done: false
+      status: Ongoing
+      done: true
     -
       name: 'Deepening & broad implementation'
       period: 'Sept 2027 - Aug 2028'

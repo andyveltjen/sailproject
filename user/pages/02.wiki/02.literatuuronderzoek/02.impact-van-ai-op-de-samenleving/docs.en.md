@@ -1,5 +1,5 @@
 ---
-title: 'Impact on learning processes'
+title: 'Impact of AI on society'
 taxonomy:
   category:
     - docs

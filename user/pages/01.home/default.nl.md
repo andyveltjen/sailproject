@@ -73,8 +73,8 @@ timeline:
         -
             name: 'Ontwerp & testing onderwijsscenario’s'
             period: 'Mei 2026 – Aug 2027'
-            status: Gepland
-            done: false
+            status: Lopend
+            done: true
         -
             name: 'Verdieping & brede implementatie'
             period: 'Sept 2027 - Aug 2028'

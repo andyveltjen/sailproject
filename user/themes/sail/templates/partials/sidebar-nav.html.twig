@@ -2,8 +2,9 @@
    Sidebar navigatie — recursief, top-level detectie via parent route
 ────────────────────────────────────────────────────────────────────── #}
 
-{% macro navloop(item, wiki_root_route) %}
+{% macro navloop(item, wiki_root_route, depth) %}
     {% import _self as self %}
+    {% set depth = depth ?? 0 %}
     {% for p in item.children.visible %}
         {% set is_active     = p.active ? true : false %}
         {% set is_parent     = p.activeChild ? true : false %}
@@ -22,12 +23,10 @@
                     <div class="flex items-center gap-1 py-1.5">
 
                         {# Bullet — zelfde als top-level zonder kinderen #}
-                        <span class="w-5 flex-shrink-0 flex items-center justify-center">
-                            <i class="fa text-[8px]
-                                      {% if is_active %}fa-square text-sail-500
-                                      {% elseif is_open %}fa-square text-sail-400
-                                      {% else %}fa-square-o text-slate-300 group-hover:text-slate-400{% endif %}"></i>
-                        </span>
+                        <span class="w-5 flex-shrink-0 flex items-center justify-center text-[13px] leading-none
+                                     {% if is_active %}text-sail-500
+                                     {% elseif is_open %}text-sail-400
+                                     {% else %}text-slate-300 group-hover:text-slate-400{% endif %}">●</span>
 
                         {# Wrapper voor link + badge — krijgt samen de hover/active achtergrond #}
                         <div class="flex-1 flex items-center rounded-md transition-colors
@@ -59,16 +58,14 @@
                 <ul class="mt-0.5 space-y-0.5 ml-4 pl-2.5 border-l-2 border-slate-100
                            {% if not is_open %}hidden{% endif %}"
                     data-nav-children>
-                    {{ self.navloop(p, wiki_root_route) }}
+                    {{ self.navloop(p, wiki_root_route, depth + 1) }}
                 </ul>
 
             {% elseif is_top %}
                 {# ── Top-level ZONDER kinderen ── #}
                 <div class="flex items-center gap-1">
-                    <span class="w-5 flex-shrink-0 flex items-center justify-center">
-                        <i class="fa text-[8px]
-                                  {% if is_active %}fa-square text-sail-500{% else %}fa-square-o text-slate-300{% endif %}"></i>
-                    </span>
+                    <span class="w-5 flex-shrink-0 flex items-center justify-center text-[13px] leading-none
+                                 {% if is_active %}text-sail-500{% else %}text-slate-300{% endif %}">●</span>
                     <a href="{{ p.url }}"
                        class="flex-1 py-1.5 px-2 rounded-md text-sm transition-colors line-clamp-2
                               {% if is_active %}bg-sail-50 text-sail-700 font-semibold
@@ -78,25 +75,39 @@
                 </div>
 
             {% else %}
-                {# ── Sub-pagina ── #}
+                {# ── Sub-pagina (niveau 2+) — vanaf niveau 3 ander opsommingsteken ── #}
                 <div class="flex items-center gap-0.5">
-                    <span class="w-4 flex-shrink-0 flex items-center justify-center">
-                        <i class="fa text-[7px]
-                                  {% if is_active %}fa-circle text-sail-400{% else %}fa-minus text-slate-200{% endif %}"></i>
+                    <span class="w-4 flex-shrink-0 flex items-center justify-center leading-none
+                                 {% if depth >= 2 %}text-[16px]{% else %}text-[20px]{% endif %}
+                                 {% if is_active %}text-sail-400{% else %}text-slate-300{% endif %}">
+                        {% if depth >= 2 %}-{% else %}▸{% endif %}
                     </span>
-                    <a href="{{ p.url }}"
-                       class="flex-1 py-1.5 px-2 rounded-md text-sm transition-colors line-clamp-2
-                              {% if is_active %}text-sail-600 font-medium
-                              {% else %}text-slate-400 hover:text-slate-600 hover:bg-slate-50{% endif %}">
-                        {{ p.menu }}
-                    </a>
+
+                    <div class="flex-1 flex items-center rounded-md transition-colors
+                                {% if not is_active %}hover:bg-slate-50{% endif %}">
+                        <a href="{{ p.url }}"
+                           class="flex-1 py-1.5 px-2 text-sm line-clamp-2 transition-colors
+                                  {% if is_active %}text-sail-600 font-medium
+                                  {% else %}text-slate-400 hover:text-slate-600{% endif %}">
+                            {{ p.menu }}
+                        </a>
+
+                        {% if has_children %}
+                        {# Badge: aantal sub-pagina's, verdwijnt als open — identiek aan niveau 1 #}
+                        <span class="flex-shrink-0 text-[10px] font-medium rounded-full px-1.5 py-0.5 mr-1
+                                     leading-none select-none transition-all duration-200
+                                     {% if is_open %}opacity-0{% else %}opacity-100 bg-slate-100 text-slate-400{% endif %}">
+                            {{ child_count }}
+                        </span>
+                        {% endif %}
+                    </div>
                 </div>
 
                 {% if has_children %}
                 <ul class="mt-0.5 space-y-0.5 ml-4 pl-2 border-l border-slate-100
                            {% if not is_open %}hidden{% endif %}"
                     data-nav-children>
-                    {{ self.navloop(p, wiki_root_route) }}
+                    {{ self.navloop(p, wiki_root_route, depth + 1) }}
                 </ul>
                 {% endif %}
 
@@ -119,9 +130,9 @@
     <ul class="space-y-0.5">
         {% set wiki_page = page.find('/wiki') %}
         {% if wiki_page %}
-            {{ macro.navloop(wiki_page, wiki_page.rawRoute) }}
+            {{ macro.navloop(wiki_page, wiki_page.rawRoute, 0) }}
         {% else %}
-            {{ macro.navloop(pages, '/') }}
+            {{ macro.navloop(pages, '/', 0) }}
         {% endif %}
     </ul>
 </nav>

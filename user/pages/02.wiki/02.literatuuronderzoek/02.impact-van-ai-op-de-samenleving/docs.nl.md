@@ -1,5 +1,5 @@
 ---
-title: 'Impact op leerprocessen'
+title: 'Impact van AI op de samenleving'
 taxonomy:
     category:
         - docs

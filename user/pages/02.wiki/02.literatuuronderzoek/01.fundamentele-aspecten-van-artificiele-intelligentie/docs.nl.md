@@ -1,8 +1,10 @@
 ---
-title: 'AI-definities en concepten'
+title: 'Fundamentele aspecten van Artificiële Intelligentie'
 taxonomy:
     category:
         - docs
+    tag:
+        - '#fundamental'
 ---
 
 ## Wat is AI in onderwijscontext?

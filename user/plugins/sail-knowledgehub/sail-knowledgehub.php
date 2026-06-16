@@ -28,7 +28,7 @@ class SailKnowledgehubPlugin extends Plugin
         $page     = $this->grav['page'];
         $template = $page->template();
 
-        if ($template === 'knowledge-hub') {
+        if ($template === 'sail-radar') {
             $data = $this->fetchKnowledgeHubData();
             $this->grav['twig']->twig_vars['raindrop_collections'] = $data['collections'];
             $this->grav['twig']->twig_vars['raindrop_all_tags']    = $data['all_tags'];

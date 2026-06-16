@@ -14,7 +14,7 @@
         <nav id="main-nav" class="hidden md:flex items-center gap-6 text-sm text-slate-600">
             <a href="{{ base_url_absolute }}" class="transition-colors hover:text-sail-600">{{ 'SAIL.NAV_PROJECT'|t }}</a>
             <a href="{{ base_url_absolute }}/wiki" class="transition-colors hover:text-sail-600">{{ 'SAIL.NAV_WIKI'|t }}</a>
-            <a href="{{ base_url_absolute }}/knowledge-hub" class="transition-colors hover:text-sail-600">{{ 'SAIL.NAV_KNOWLEDGE_HUB'|t }}</a>
+            <a href="{{ base_url_absolute }}/sail-radar" class="transition-colors hover:text-sail-600">{{ 'SAIL.NAV_KNOWLEDGE_HUB'|t }}</a>
         </nav>
         <div class="hidden md:flex items-center gap-4">
             {# Taalwisselaar — root_url is altijd zonder taalprefix #}
@@ -39,7 +39,7 @@
         <nav class="flex flex-col px-6 py-4 gap-3 text-sm text-slate-600">
             <a href="{{ base_url_absolute }}" class="transition-colors hover:text-sail-600">{{ 'SAIL.NAV_PROJECT'|t }}</a>
             <a href="{{ base_url_absolute }}/wiki" class="transition-colors hover:text-sail-600">{{ 'SAIL.NAV_WIKI'|t }}</a>
-            <a href="{{ base_url_absolute }}/knowledge-hub" class="transition-colors hover:text-sail-600">{{ 'SAIL.NAV_KNOWLEDGE_HUB'|t }}</a>
+            <a href="{{ base_url_absolute }}/sail-radar" class="transition-colors hover:text-sail-600">{{ 'SAIL.NAV_KNOWLEDGE_HUB'|t }}</a>
             <div class="flex items-center gap-1.5 text-xs text-slate-400 pt-2 border-t border-slate-100">
                 <a href="{{ root_url }}{{ raw }}"
                    class="transition-colors {% if current_lang == 'nl' or not current_lang %}text-slate-700 font-semibold{% else %}hover:text-slate-600{% endif %}">NL</a>
@@ -175,19 +175,19 @@
 </section>
 {% endif %}
 
-{# ── Knowledge Hub preview ── #}
-<section id="knowledge-hub" class="py-20 px-6 bg-white">
+{# ── SAIL Radar preview ── #}
+<section id="sail-radar" class="py-20 px-6 bg-white">
     <div class="max-w-6xl mx-auto">
         <div class="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-                <h2 class="text-3xl font-bold text-slate-900 mb-2">Knowledge Hub</h2>
+                <h2 class="text-3xl font-bold text-slate-900 mb-2">SAIL Radar</h2>
                 <p class="text-slate-500 max-w-xl">
                     {{ current_lang == 'en'
                         ? 'Curated sources on AI, education and professional development — collected and tagged by the SAIL team.'
                         : 'Gecureerde bronnen over AI, onderwijs en professionele ontwikkeling — verzameld en gelabeld door het SAIL-team.' }}
                 </p>
             </div>
-            <a href="{{ base_url_absolute }}/knowledge-hub"
+            <a href="{{ base_url_absolute }}/sail-radar"
                class="inline-flex items-center gap-2 text-sail-600 hover:text-sail-800 text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0">
                 {{ current_lang == 'en' ? 'View all sources' : 'Bekijk alle bronnen' }}
                 <i class="fa fa-arrow-right text-xs"></i>
@@ -408,7 +408,7 @@
 (function () {
     // ── Actieve nav-sectie markeren ──────────────────────────────────────────
     const anchors  = document.querySelectorAll('#main-nav .nav-anchor');
-    const sections = ['project', 'wiki', 'knowledge-hub'].map(id => document.getElementById(id)).filter(Boolean);
+    const sections = ['project', 'wiki', 'sail-radar'].map(id => document.getElementById(id)).filter(Boolean);
 
     function setActive(id) {
         anchors.forEach(a => {

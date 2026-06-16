@@ -19,7 +19,7 @@
                     <a href="{{ base_url_absolute }}">
                         <img src="{{ url('theme://images/logo.png') }}" alt="{{ site.title }}" class="h-10 w-auto">
                     </a>
-                    <span class="text-sail-500 text-sm font-medium">Knowledge Hub</span>
+                    <span class="text-sail-500 text-sm font-medium">SAIL Radar</span>
                 </div>
                 <div class="flex-shrink-0 flex items-center gap-1.5 text-xs text-slate-400 mt-1">
                     <a href="{{ root_url }}{{ raw }}"
@@ -32,7 +32,7 @@
         </div>
 
         {# Terug naar project #}
-        <div class="px-4 pt-3 pb-1">
+        <div class="px-4 py-6">
             <a href="{{ base_url_absolute }}" class="flex items-center gap-2 text-slate-400 hover:text-sail-600 text-xs transition-colors">
                 <i class="fa fa-arrow-left"></i> {{ 'SAIL.BACK_TO_PROJECT'|t }}
             </a>
@@ -258,7 +258,7 @@
 
         {# Footer #}
         <footer class="border-t border-slate-100 px-8 py-4 text-xs text-slate-400 flex items-center justify-between">
-            <span>{{ site.title }} — Knowledge Hub</span>
+            <span>{{ site.title }} — SAIL Radar</span>
             <a href="{{ base_url_absolute }}" class="hover:text-sail-500 transition-colors">← {{ 'SAIL.BACK_TO_PROJECT'|t }}</a>
         </footer>
     </div>

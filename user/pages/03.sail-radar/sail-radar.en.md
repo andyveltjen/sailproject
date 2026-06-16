@@ -1,7 +1,7 @@
 ---
-title: 'Knowledge Hub'
+title: 'SAIL Radar'
 subtitle: 'Curated sources on AI, education and professional development — collected and tagged by the SAIL team.'
-template: knowledge-hub
+template: sail-radar
 tag_translations:
     onderwijs: education
     innovatie: innovation
