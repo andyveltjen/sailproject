@@ -1,3 +1,0 @@
----
-title: 'Future professional practice'
----

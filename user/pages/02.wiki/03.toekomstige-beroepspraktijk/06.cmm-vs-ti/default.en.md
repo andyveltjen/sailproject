@@ -1,3 +1,0 @@
----
-title: 'CMM vs TI'
----
